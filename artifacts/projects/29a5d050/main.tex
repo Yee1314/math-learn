@@ -1,0 +1,441 @@
+\documentclass[11pt]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{etoolbox}
+
+% 1. 自定义定理样式实现标题后强制换行
+\newtheoremstyle{break}% 样式名称
+  {\topsep}{\topsep}% 环境上下间距
+  {\normalfont}% 正文字体
+  {}% 缩进量
+  {\bfseries}{.}% 头部字体和标点
+  {\newline}% 头部后的间距：设置为 \newline 即可实现完美的换行效果
+  {}% 头部时间/附加参数规范
+
+% 应用新样式并声明常用的定理类环境
+\theoremstyle{break}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\newtheorem{definition}[theorem]{定义}
+
+% 2. 利用 etoolbox 宏包动态修补 proof 环境，使其标题后自动换行
+\makeatletter
+\patchcmd{\proof}{\item[\hskip\labelsep\itshape#1\@addpunct{.}]}{\item[\hskip\labelsep\itshape#1\@addpunct{.}]\hfill\par}{}{}
+\makeatother
+
+\begin{document}
+固定重数和集大小的多项式压缩
+
+草稿 \quad 2026年4月29日
+
+\textbf{摘要}
+
+对于固定的 $h$，令 $N(h,k)$ 为满足以下条件的最小 $N$：任意由 $k$ 个整数组成的集合所能达到的 $h$ 重和集基数 $|hA|$，均能由 $\{1,\dots,N\}$ 的某个 $k$ 元子集达到。我们利用 Rajagopal 关于 $|hA|$ 可能取值范围的固定 $h$ 定理，证明了对于任意固定的 $h$，均有
+\[ N(h,k) \le k^{C_h} \]
+成立。本文的新颖之处在于，在 Rajagopal 的大值构造中，用多项式直径的块替代了稀疏的几何块。这一替代是在低次 Hilbert 函数的层面上进行的，因为当 $h$ 固定时，低次 Hilbert 函数是唯一与 $h$ 重和集相关的数据。
+\section{引言}
+设 $A \subset \mathbb{Z}$ 为有限集，$h$ 为正整数，记
+\[ hA = \{a_1 + \cdots + a_h : a_i \in A\}, \]
+其中允许元素重复选取。定义
+\[ R(h,k) = \{|hA| : A \subset \mathbb{Z},\ |A| = k\}. \]
+令 $N(h,k)$ 为满足下述条件的最小正整数 $N$：
+\[ R(h,k) = \{|hA| : A \subseteq \{1,\dots,N\},\ |A| = k\}. \]
+等价地，也可在区间 $[0, N-1]$ 上进行讨论，最后再作平移。
+本文旨在证明如下多项式压缩界。
+\textbf{定理 1.1.}
+对任意固定的 $h \geq 1$，存在常数 $C$，使得对所有 $k \geq 2$，均有
+\[ N(h,k) \leq k^{Ch}. \]
+该证明利用了 Rajagopal 关于固定重数和集可能取值范围的定理。令
+\[ M_{h,k} = hk - h + 1, \quad K_{h,k} = \binom{h+k-1}{h}, \]
+并定义
+\[ \Delta_{h,k} = \bigcup_{\ell=0}^{\min(h,k)-3} [M_{h,k} + \ell h + 1, M_{h,k} + \ell h + (h-2-\ell)]. \]
+此处及下文，$[u,v]$ 表示满足 $u \leq n \leq v$ 的整数 $n$ 构成的集合；若 $u > v$，则该区间为空集。
+
+\textbf{定理 1.2} (Rajagopal [1]). 对任意固定的 $h$，存在 $k_h$，使得对所有 $k > k_h$，均有
+\[ R(h,k) = [M_{h,k}, K_{h,k}] \setminus \Delta_{h,k}. \]
+对于较大的 $k$，该证明是构造性的，并为 Rajagopal 范围内的所有取值提供了多项式直径的见证元。有限个较小的 $k$ 值最终通过放大多项式界中的常数被吸收。
+该范围的下界部分已由 Rajagopal 的填充集构造直接给出，且其直径为多项式量级。范围的上界部分则需作出调整。Rajagopal 的大值构造采用了稀疏几何级数；其低次生成函数虽形态正确，但直径关于相关参数呈指数增长。我们将其替换为具有相同截断生成函数的多项式直径格构件（lattice gadgets）。
+由于 $h$ 固定，一个固定维数的混合进制映射随即将所得格集嵌入 $\mathbb{Z}$ 中，且直径仅呈现多项式增长。
+\section{生成函数与不交并}
+在本文的其余部分，$h$ 为固定常数。隐含在 $O_h(\cdot)$、$\Theta_h(\cdot)$ 和 $\asymp_h$ 中的常数可能依赖于 $h$，但不依赖于 $k$。
+
+对于无挠阿贝尔群中的有限集 $A$，定义截断和集生成函数
+\[
+F_A(z) = \sum_{q=0}^h |qA| z^q.
+\]
+所有涉及 $F_A$ 的恒等式均在模 $z^{h+1}$ 的意义下理解。
+\textbf{定义 2.1}（不交并）
+设 $A \subset \mathbb{Z}^r$ 与 $B \subset \mathbb{Z}^s$ 为有限集。定义
+\[ A \sqcup B = (A,0,1,0) \cup (0,B,0,1) \subset \mathbb{Z}^{r+s+2}. \]
+迭代不交并的结合顺序可任意选取。
+
+\textbf{引理 2.2.} 对于有限集 $A$ 和 $B$，有
+\[
+F_{A \sqcup B}(z) \equiv F_A(z) F_B(z) \pmod{z^{h+1}}.
+\]
+
+\textbf{证明}：$q(A \sqcup B)$ 中的任一元素均包含唯一确定的 $i$ 个来自 $(A,0,1,0)$ 的加项，以及 $q-i$ 个来自 $(0,B,0,1)$ 的加项，这是因为其最后两个坐标恰好为 $(i,q-i)$。因此
+\[
+|q(A \sqcup B)| = \sum_{i=0}^q |iA| \, |(q-i)B|,
+\]
+这正是系数恒等式。
+\textbf{引理 2.3}（混合进制嵌入）。
+设 $A \subset \mathbb{Z}^D$ 的所有坐标均属于 $[0, M]$。若 $Q > hM$ 且 $\phi(x_1, \dots, x_D) = x_1 + Q x_2 + \cdots + Q^{D-1} x_D$，
+则 $\phi$ 是 $A$ 上的 $h$ 阶 Freiman 同构。特别地，对任意 $0 \le q \le h$，有 $|q\phi(A)| = |qA|$，且
+\[
+\phi(A) \subset [0, D M Q^{D-1}].
+\]
+因此，若 $D = O_h(1)$ 且 $M \le k^{O_h(1)}$，则 $\phi(A)$ 的直径关于 $k$ 呈多项式增长。
+
+\textbf{证明}。集合 $A$ 中至多 $h$ 个元素之和的每个坐标均落在区间 $[0, hM]$ 内。由于 $Q > hM$，在映射 $\phi$ 下像的相等等价于 $Q$ 进制各位数字的相等，从而等价于向量和的相等。
+\section{多项式直径的自由与进位构件}
+
+我们首先记录一个具有显式多项式直径的 $B$-集族。
+\textbf{引理 3.1}（多项式自由块）.
+对任意 $r \ge 1$，存在一个大小为 $r$ 的集合 $U \subset \mathbb{Z}^{h+1}$，其坐标以 $r^h$ 为界，使得对任意 $0 \le q \le h$，均有
+\[ |qU| = \binom{r+q-1}{q}. \]
+等价地，
+\[ F_U(z) \equiv (1-z)^{-r} \pmod{z^{h+1}}. \]
+当 $r=0$ 时，取 $U = \varnothing$ 且 $F = 1$。
+\textbf{证明}。
+取
+\[ U = \{(1, i, i^2, \dots, i^h) : 1 \le i \le r\}. \]
+假设两个 $q$ 重和相等，其中 $q \le h$。第一个坐标表明这两个和使用了相同数量 $q$ 的项。其余坐标给出了两个指标多重集的前 $h$ 个幂和相等。由牛顿恒等式可知，它们的初等对称函数相等，从而这两个多重集相等。因此，所有 $q$ 重和均互不相同。
+
+接下来，我们为 Rajagopal 证明中的两个稀疏几何块构造多项式替代物。我们使用一个无关联基。
+
+\textbf{定义 3.2} 设 $u_1, \dots, u_r$ 为无挠阿贝尔群中的一个序列。若对任意满足 $c_i, c'_i \le L$ 且 $c_i, c'_i \in \mathbb{N}_0$ 的系数，等式
+\[ \sum_i c_i u_i = \sum_i c'_i u_i \]
+蕴含对所有 $i$ 均有 $c_i = c'_i$，则称该序列是 $L$-分离的。
+
+对于我们的应用而言，取 $L = h^2$ 即可。具体地，令
+\[ u_i = (1, i, i^2, \dots, i^{h^2}) \in \mathbb{Z}^{h^2+1} \quad (1 \le i \le r). \]
+与上文相同的牛顿恒等式论证表明，这些向量是 $h^2$-分离的，且其坐标以 $r^{h^2}$ 为界。
+\subsection{G-构件}
+对于 $3 \le m \le h$ 与 $r \ge 0$，定义
+\[
+G_{m,r} = \{0\} \cup \{u_i, m u_i : 1 \le i \le r\}.
+\]
+因此 $|G_{m,r}| = 2r+1$。
+
+\textbf{引理 3.3.} 对于 $3 \le m \le h$ 且 $r \ge 0$，有
+\[ F(z) \equiv \frac{(1-z^m)^r}{(1-z)^{2r+1}} G_{m,r}(z) \pmod{z^{h+1}}. \]
+此外，定义
+\[ P_{G_{m,r}}(z) = (1-z^m)^r, \]
+则有
+\[ P_{G_{m,r}}(z) - P_{G_{m,r+1}}(z) = z^m(1-z^m)^r. \]
+\textbf{证明}：
+考虑一个 $q$ 重和，其中 $q \le h$。它具有如下形式：
+\[ \sum_i a_i u_i + \sum_i b_i (m u_i) = \sum_i (a_i + m b_i) u_i, \]
+其中 $a_i, b_i \ge 0$。由于 $\sum_i (a_i + m b_i) \le mh \le h^2$，系数向量 $c_i = a_i + m b_i$ 由该和唯一确定。
+将 $c_i$ 写为 $c_i = m B_i + A_i$，其中 $0 \le A_i < m$。得到该系数向量所需的最少非零加数个数为 $\sum_i (A_i + B_i)$，而 $0 \in G_{m,r}$ 的副本可将其填充至任意更大的长度。因此，其生成函数为
+\[ \frac{1}{1-z} \left( \sum_{A=0}^{m-1} z^A \right)^r \left( \sum_{B \ge 0} z^B \right)^r = \frac{(1-z^m)^r}{(1-z)^{2r+1}}. \]
+最后的等式是显然的。
+\subsection{H-构件}
+对于 $2 \le m \le h-1$ 且 $r \ge 0$，
+\textbf{定义}
+\[ H_{m,r} = \{u_i, mu_i : 1 \le i \le r\}. \]
+因此 $|H_{m,r}| = 2r$ 且 $H_{m,0} = \emptyset$。
+
+\textbf{引理 3.4}
+对于 $2 \le m \le h-1$ 且 $r \ge 0$，有
+\[ F(z) \equiv \frac{P_{H_{m,r}}(z)}{(1-z)^{2r}} \pmod{z^{h+1}}, \]
+其中
+\[ P_{H_{m,r}}(z) = \frac{(1-z^m)^r - z^{m-1}(1-z)^r}{1-z^{m-1}}. \]
+此外，
+\[ P_{H_{m,r}}(z) \equiv 1 - \binom{r}{2} z^{m+1} + \sum_{\nu=m+2}^h O(r^{\nu-m+1}) z^\nu \pmod{z^{h+1}}, \]
+且
+\[ P_{H_{m,r}}(z) - P_{H_{m,r+1}}(z) \equiv r z^{m+1} + \sum_{\nu=m+2}^h O(r^{\nu-m}) z^\nu \pmod{z^{h+1}}. \]
+
+\textbf{证明}：
+来自 $H$ 的 $q$ 重和（其中 $q \leq h$）具有形式
+\[ \sum_i a_i u_i + \sum_i b_i (m u_i) = \sum_i (a_i + m b_i) u_i. \]
+系数向量 $c_i = a_i + m b_i$ 同样由该和唯一确定，因为 $\sum c_i \leq mh \leq h^2$。
+令
+\[ c_i = m d_i + e_i, \quad 0 \leq e_i < m, \]
+并记 $D = \sum d_i$，$E = \sum e_i$。对于固定的系数向量 $c$，选取满足 $0 \leq b_i \leq d_i$ 的 $b_i$ 可得长度
+\[ \sum_i (a_i + b_i) = mD + E - (m-1) \sum_i b_i. \]
+当 $b_i$ 变化时，和式 $\sum b_i$ 取遍从 $0$ 到 $D$ 的所有整数。因此，该系数向量恰好对以下次数产生贡献：
+\[ D+E, \ D+E+(m-1), \ \dots, \ mD+E. \]
+由此可得，
+\[ F_{H_{m,r}}(z) \equiv \sum_{\substack{d_i \geq 0 \\ 0 \leq e_i < m}} z^{D+E} \left( 1 + z^{m-1} + \cdots + z^{(m-1)D} \right) \]
+\[ = \frac{ \left( \frac{1-z^m}{1-z} \right)^r (1-z)^{-r} - z^{m-1}(1-z^m)^{-r} }{ 1-z^{m-1} } = \frac{ (1-z^m)^r - z^{m-1}(1-z)^r }{ (1-z)^{2r}(1-z^{m-1}) }. \]
+这就证明了关于 $P_{H_{m,r}}$ 的公式。
+所述的展开式可通过将分子按 $z$ 的幂次展开得到。对于单步差分，利用
+\[ P_{H_{m,r}}(z) - P_{H_{m,r+1}}(z) = \frac{ z^m \left( (1-z^m)^r - (1-z)^r \right) }{ 1-z^{m-1} }. \]
+其首个非零项为 $r z^{m+1}$，且当 $\nu \geq m+2$ 时，$z^\nu$ 的系数为 $O(r^{\nu-m})$。
+\section{系数记号}
+我们采用 Rajagopal 系数记号的截断版本。若对 $0 \le q \le h$ 有 $p_q = O(X^q)$，则称级数 $P(z) = \sum_{q=0}^h p_q z^q$ 属于 $O_h[[Xz]]$。若对所有 $0 \le q \le h$ 均有 $p_q \asymp X^q$ 且 $p_q > 0$，则称其属于 $\Theta_{h,+}[[Xz]]$。
+
+\textbf{初等控制引理}
+下述初等控制引理是下文所需的唯一解析估计。
+
+\textbf{引理 4.1.}
+固定 $0 \le \alpha < 1$。令 $c \to \infty$，并设 $E_1(z), \dots, E_s(z)$ 为有限个截断级数，满足
+\[ E_i(z) = 1 + O_h[[c^\alpha z]]. \]
+则
+\[ \prod_{i=1}^s (1-z)^{-c} E_i(z) \in \Theta_{h,+}[[c z]]. \]
+更一般地，若
+\[ D(z) = a z^d \left(1 + O([[c_\alpha z]])\right) \]
+其中 $a > 0$ 且 $0 \le d \le h$，则有
+\[ \prod_{i=1}^s D(z)(1-z)^{-c} E_{i, h, +}(z) \in a z^d \Theta([[c z]]). \]
+\noindent\textbf{证明.} 只需证明第二个结论；第一个结论是 $a_h = 1$，$d = 0$ 的情形。当 $q \geq d$ 时，$z^q$ 的系数为
+\[
+\binom{c+q-d-1}{q-d} a_h + O\left( \sum_{e=1}^{q-d} a_h c^{\alpha e} c^{q-d-e} \right).
+\]
+主项满足 $\asymp a_h c^{q-d}$，而每个误差项均为 $O(a_h c^{q-d-(1-\alpha)e}) = o(a_h c^{q-d})$。因此，对于所有充分大的 $c$，该系数为正且 $\asymp a_h c^{q-d}$。
+\section{范围的下部}
+我们以记录直径的形式引用
+\textbf{Rajagopal 的填充集引理}。
+\textbf{定义 5.1.}
+设集合 $B \subseteq [0, d]$。若 $hB = [0, hd]$，则称 $B$ 是 $(h, d)$-填充的。
+\textbf{引理 5.2}（Rajagopal 填充引理 [1]）。
+对于固定的 $h \ge 2$ 以及所有充分大的 $k$，若
+\[
+\frac{(k-1)h}{k-2} \le d \le 4^{(h^2+h)/2},
+\]
+则存在一个 $(h,d)$-填充集 $B \subseteq [0,d]$，满足 $|B| = k-1$ 且 $[0, k/8] \subseteq B$。
+\textbf{命题 5.3}（小值具有多项式见证）．
+对于固定的 $h \ge 2$，存在常数 $a > 0$ 和 $C > 0$，使得对于所有充分大的 $k$，区间 $[M_{h,k}, a k^h] \setminus \Delta_{h,k}$ 中的每一个 $t$ 都等于某个满足 $|A| = k$ 的集合 $A \subseteq [0, C k^h]$ 的 $h$ 倍和集的大小 $|hA|$．
+\textbf{证明}. 取
+\[ D_{\max} = \left\lfloor \frac{(k-1)h}{2(h^2+h)} \right\rfloor. \]
+令 $d \in [k-2,D_{\max}]$，$i \in [1,h]$，并设 $B \subseteq [0,d]$ 为\textbf{引理 5.2} 所提供的集合。对于充分大的 $k$，包含关系 $[0,k/8] \subseteq B$ 蕴含 $[0,h^2] \subseteq B$。定义
+\[ A = \{0\} \cup (i+B). \]
+则 $|A| = k$ 且 $A \subseteq [0,h+D_{\max}]$。由于 $hB = [0,hd]$ 且 $[0,h^2] \subseteq B$，可得
+\[ hA = \{0\} \cup [i,h(i+d)]. \]
+事实上，区间 $[i, hi]$ 包含于 $i + B$ 中，而区间 $[hi, h(i + d)]$ 即为 $hi + hB$。
+因此
+\[ |hA| = h(i+d) - i + 2. \]
+记 $i+d = k+\ell$。则有
+\[ |hA| = hk + h\ell - i + 2 = M_{h,k} + h\ell + (h - i + 1). \]
+对于固定的 $\ell$，当 $i$ 取遍所有允许的值时，这恰好给出了 $\Delta_{h,k}$ 外部第 $\ell$ 行中的整数，即
+\[ M_{h,k} + h\ell + [\max(1, h-\ell-1), h]. \]
+当 $d$ 取至 $D_{\max}$ 时，这覆盖了 $\Delta_{h,k}$ 外部直至 $a_h k^h$ 的所有值，其中 $a_h > 0$ 为仅依赖于 $h$ 的常数。其直径为 $O_h(k^h)$。
+\section{取值范围的大部分}
+我们现在证明针对 Rajagopal 大值构造的多项式直径替代形式。
+\subsection{稠密块}
+我们需要与 Rajagopal 相同的稠密块。对于 $b \ge 3$，令
+\[ s_b = (h-1)(b-2)+1, \]
+且对于 $1 \le j \le s_b$，定义
+\[ B_{j,b} = [0,b-2] \cup \{h(b-2)+2-j\}. \]
+因此 $|B_{j,b}| = b$。
+\textbf{引理 6.1} (Rajagopal 稠密块 [1])。对于固定的 $h$ 和 $b \ge 3$，集合 $B_{j,b}$ 满足：
+
+(a) 当 $2 \le \eta \le h$ 且 $2 \le j \le s_b$ 时，
+\[ 0 \le |\eta B_{j-1,b}| - |\eta B_{j,b}| \le h; \]
+
+(b) 当 $1 \le \eta \le h$ 且 $1 \le j \le s_b$ 时，
+\[ |\eta B_{j,b}| = O_h(b); \]
+
+(c)
+\[ F_{B_{1,3}}(z) \equiv (1-z)^{-3} \pmod{z^{h+1}}; \]
+
+(d) 当 $b > 3$ 时，
+\[ F_{B_{1,b}}(z) \equiv (1-z)^{-1} F_{B_{s_{b-1},b-1}}(z) \pmod{z^{h+1}}. \]
+\subsection{稀疏多项式块}
+固定指数
+\[
+\alpha = \frac{9}{10}, \quad \beta = \frac{4}{5}, \quad \gamma = \frac{7}{10}.
+\]
+选取它们仅是为了满足
+\[
+0 < \beta < \alpha < 1, \quad 2\beta > 1, \quad 2\beta\gamma > 1.
+\]
+固定 $b \in [3, k-\lfloor k^\gamma \rfloor]$ 并令 $c = k-b$。记
+\[
+S = \lfloor c^\alpha \rfloor, \quad T = \lfloor c^\beta \rfloor.
+\]
+对于参数
+\[
+0 \le r_m \le S \ (3 \le m \le h), \quad 1 \le u_m \le T \ (2 \le m \le h-1),
+\]
+定义
+\[
+R = c - \sum_{m=3}^h (2r_m + 1) - \sum_{m=2}^{h-1} 2u_m.
+\]
+当 $k$ 充分大时该值为非负。定义稀疏块
+\[
+C(r,u) = \bigsqcup_{m=3}^h G_{m,r_m} \sqcup \bigsqcup_{m=2}^{h-1} H_{m,u_m} \sqcup U_R.
+\]
+则有 $|C(r,u)| = c$，且由
+\textbf{引理 2.2}、\textbf{引理 3.1}、\textbf{引理 3.3} 与 \textbf{引理 3.4}
+可得
+\[
+F_C(z) \equiv \frac{1}{(1-z)^c} \prod_{m=3}^h (1-z^m)^{r_m} \prod_{m=2}^{h-1} P_{H_{m,u_m}}(z) \pmod{z^{h+1}}. \tag{1}
+\]
+\textbf{引理 6.2}（稀疏块的变分）
+
+对于固定的 $h$ 和充分大的 $c$，以下结论成立。
+
+(a) 若 $3 \le \mu \le h$，则将 $r$ 增加 $1$ 会使 $F(z)$ 减少一个属于 $\frac{\mu}{h} C z^\mu \Theta_{h,+}[[cz]]$ 的元素。
+
+(b) 若 $2 \le \mu \le h-1$，则将 $u$ 增加 $1$ 会使 $F(z)$ 减少一个属于 $u z^{\mu+1} \Theta_{h,+}^\mu [[cz]]$ 的元素。
+\textbf{证明}。
+所有乘积均截断至模 $z^{h+1}$。式 (1) 中的剩余因子形如 $1 + O([[c_\alpha z]])$，这是因为 $r \le c_\alpha$ 且 $u \le c_\beta \le c_\alpha$。
+对于情形 (a)，由
+\textbf{引理 3.3}
+可知，分子中的正下降量为
+\[ z^\mu (1 - z^\mu)^{r_\mu} = z^\mu (1 + O([[c_\alpha z]])). \]
+将其与其他分子因子及 $(1-z)^{-c}$ 相乘，
+\textbf{引理 4.1}
+即给出所宣称的 $z^\mu \Theta([[c z]])$ 下降量。
+对于情形 (b)，
+\textbf{引理 3.4}
+给出
+\[ P_{H_{\mu, u_\mu}}(z) - P_{H_{\mu, u_\mu+1}}(z) = u_\mu z^{\mu+1} (1 + O([[c_\alpha z]])) \]
+该等式在直到 $h$ 次的范围内成立。
+\textbf{引理 4.1}
+再次适用。
+\subsection{连通性引理}
+我们使用 Rajagopal 的区间引理，为完整性起见，在此一并列出。
+\textbf{引理 6.3.}
+
+设函数
+\[
+f: [0, n_1] \times \cdots \times [0, n_d] \to \mathbb{Z}
+\]
+在每个坐标分量上均为非增函数。对 $1 \le i \le d$，定义
+\[
+\delta_i = \max_{\mathbf{x} : x_i < n_i} \big( f(\mathbf{x}) - f(\mathbf{x} + \mathbf{e}_i) \big),
+\]
+其中最大值取遍所有满足 $x_i < n_i$ 的 $
+\mathbf{x}$；并定义
+\[
+\Delta_i = \min_{\substack{x_1, \dots, x_{i-1}, \\ x_{i+1}, \dots, x_d}} \big( f(x_1, \dots, x_{i-1}, 0, x_{i+1}, \dots, x_d) - f(x_1, \dots, x_{i-1}, n_i, x_{i+1}, \dots, x_d) \big).
+\]
+若 $\delta_1 \le 1$ 且对任意 $2 \le i \le d$ 均有 $\delta_i \le \Delta_{i-1}$，则 $f$ 的像集构成一个整数区间。
+\textbf{证明}：
+固定 $x_2, \dots, x_d$，变动 $x_1$ 会得到一个区间，因为相邻的下降量仅为 $0$ 或 $1$。
+假设归纳地，在固定后续坐标的情况下变动 $x_1, \dots, x_{i-1}$ 后，其像为一个区间。当 $x_i$ 增加 $1$ 时，新区间的起点至多比旧区间低 $\delta_i$，而旧区间的长度至少为 $\Delta_{i-1}$。因此相邻区间必然相交。对 $i$ 进行归纳即可证得结论。
+\subsection{固定 $b$：连通性}
+对于固定的 $b$ 及上述参数，定义
+\[
+A_{j,b} = B_b \sqcup C(r_j, u_j), \quad 1 \le j \le s.
+\]
+记 $\mathcal{A}_b$ 为所有此类 $A_{j,b}$ 构成的族。
+\textbf{引理 6.4}
+对固定的 $h \geq 3$ 以及所有充分大的 $k$，集合 $\{ |hA| : A \in \mathcal{A}_b \}$ 对任意 $b \in [3, k - \lfloor k^\gamma \rfloor]$ 均为整数区间。
+\textbf{证明}.
+将变量排序为
+\[ r_h, u_{h-1}, r_{h-1}, u_{h-2}, \dots, r_3, u_2, j. \]
+共有 $2h-3$ 个变量。我们在对应的方体上对函数 $f = |hA|$ 应用
+\textbf{引理 6.3}，
+并对变量进行平移，使得每个区间的起点均为 $0$。
+由于 $A = B \sqcup C$，
+\textbf{引理 2.2} 给出
+\[ |hA| = \sum_{\eta=0}^h |\eta C| |(h-\eta)B|. \tag{2} \]
+由
+\textbf{引理 6.2}
+与
+\textbf{引理 6.1(a)}
+可知，函数 $f$ 关于每个变量均单调不增。将 $r_h$ 增加 $1$ 仅会在 $h$ 次项处改变 $F$，此时 $|hC|$ 恰好减少 $1$；因此 $\delta_1 = 1$。
+接下来需要比较单步下降量 $\delta_i$ 与全变差 $\Delta_{i-1}$。我们记录所需的估计式。
+
+\textbf{引理 6.2}
+与式 (2) 给出：若变量为 $r_\mu$ 且 $3 \le \mu \le h$，则有
+\[ \delta(r_\mu) \le C_h \left( c^{h-\mu} + b c^{h-\mu-1} \right), \quad (3) \]
+其中负指数项已被省略。由于每一步均出现相同的正首项，让 $r_\mu$ 在其全范围内变动可得
+\[ \Delta(r_\mu) \ge c_h S \left( c^{h-\mu} + b c^{h-\mu-1} \right). \quad (4) \]
+
+类似地，若变量为 $u_\mu$ 且 $2 \le \mu \le h-1$，则有
+\[ \delta(u_\mu) \le C_h T \left( c^{h-\mu-1} + b c^{h-\mu-2} \right), \quad (5) \]
+以及
+\[ \Delta(u_\mu) \ge c_h T^2 \left( c^{h-\mu-1} + b c^{h-\mu-2} \right). \quad (6) \]
+事实上，总下降量是权重为 $u_\mu = 1,2,\dots,T-1$ 的单步下降量之和，其和渐近于 $T^2$。
+
+最后，由
+\textbf{引理 6.1(a)}
+与式 (2)，将 $j$ 改变 $1$ 仅改变稠密块因子，且
+\[ \delta(j) \le C_h \sum_{\eta=0}^{h-2} |\eta_C| \le C_h c^{h-2}. \quad (7) \]
+
+现在比较相邻变量。由于 $\beta < \alpha$，式 (5) 与 (4) 表明，当 $c$ 充分大时，每个 $u_\mu$ 的下降量至多为前一个 $r_{\mu+1}$ 的全变差。对于反向比较，注意到 $c \ge k^\gamma + O(1)$ 且 $b \le k$，故条件 $2\beta\gamma > 1$ 给出 $b \le c^{2\beta - o(1)}$。结合 $2\beta > 1$，式 (3) 与 (6) 表明每个 $r_\mu$ 的下降量至多为前一个 $u_\mu$ 的全变差。最后，式 (7) 被 $\mu=2$ 时的式 (6) 所控制，这同样是因为 $2\beta > 1$。
+
+因此，
+\textbf{引理 6.3}
+的假设成立，且 $f$ 的像为一个区间。
+\subsection{变动参数 $b$}
+\textbf{命题 6.5}（大值具有多项式见证）。\\
+固定 $h \geq 3$ 与 $\varepsilon > 0$。对所有充分大的 $k$，任意整数 $t \in [\varepsilon k^h, K_{h,k}]$ 均等于某个 $k$ 元集合 $A$ 的 $h$ 倍和集的大小 $|hA|$，其中 $A$ 包含于一个长度为 $k^{O_h(1)}$ 的区间内。
+\noindent\textbf{证明.}
+令
+\[ \mathcal{A} = \bigcup_{b=3}^{k-\lfloor k\gamma \rfloor} \mathcal{A}_b. \]
+由
+\textbf{引理 6.4}
+可知，每个 $h\mathcal{A}_b := \{ |hA| : A \in \mathcal{A}_b \}$ 均为一个区间。
+我们首先证明相邻区间存在重叠。固定 $b > 3$，在 $\mathcal{A}_b$ 中选取所有稀疏参数取最小值且 $j = 1$ 的元素。其稀疏块的生成函数为 $(1-z)^{-c}$。
+在 $\mathcal{A}_{b-1}$ 中，选取所有稀疏参数取最小值且 $j = s_{b-1}$ 的元素。其稀疏块的生成函数为 $(1-z)^{-(c+1)}$。根据
+\textbf{引理 6.1(d)}
+可得
+\[ F_{B_{1,b}}(z)(1-z)^{-c} \equiv F_{B_{s_{b-1},b-1}}(z)(1-z)^{-(c+1)} \pmod{z^{h+1}}. \]
+因此，所选的两个集合具有相同的 $|hA|$ 值，且 $hA_b \cap hA_{b-1} \neq \emptyset$。故 $hA$ 构成一个区间。
+
+当 $b = 3$ 时，取所有稀疏参数为最小值且 $j = 1$，由
+\textbf{引理 6.1(c)}
+可得
+\[ F_A(z) \equiv (1-z)^{-3}(1-z)^{-(k-3)} = (1-z)^{-k} \pmod{z^{h+1}}. \]
+从而
+\[ |hA| = \binom{h+k-1}{h} = K_{h,k}. \]
+在另一端，取 $b = k - \lfloor k^\gamma \rfloor$，将所有稀疏参数置于其最大值，并取 $j = s_b$。此时 $c = \lfloor k^\gamma \rfloor$。对于 $A$ 的每个成员，我们有 $|\eta C_h| = O(c^\eta)$ 且对 $q \geq 1$ 有 $|qB_{j,b}| = O(b^q)$，而 $|0B_{j,b}| = 1$。因此该端点满足
+\[ |hA| \leq C_h(c^h + b c^{h-1}) = O(k^{\gamma h} + k^{1+\gamma(h-1)}) = o(k^h). \]
+因此，对于所有充分大的 $k$，区间 $hA$ 包含 $[\varepsilon k^h, K_{h,k}]$。
+
+最后仅需记录直径。稠密块 $B_{j,b}$ 位于长度为 $O(k)$ 的区间内。自由块 $U_h$ 的坐标以 $k^h$ 为界。$G_{m,r}$ 和 $H_{m,u}$ 中使用的基底坐标以 $k^{O_h(1)}$ 为界，因为 $r,u \leq k$。仅有 $O_h(1)$ 个不交并分量，故所得格点集位于固定维数中，且坐标以 $k^{O_h(1)}$ 为界。
+\textbf{引理 2.3}
+将其嵌入到 $\mathbb{Z}$ 中，直径为 $k^{O_h(1)}$，并保持所有 $q \leq h$ 的 $q$ 重和集大小不变。
+\section{二重情形}
+我们在此给出 $h=2$ 时的初等二次型论证，以便使
+\textbf{定理 1.1}
+在未被大值构造所覆盖的端点情形下保持自包含。
+\textbf{命题 7.1.}
+对任意 $k \ge 1$，均有 $N(2,k) \le 8k^2 + 2k + 2$。
+\textbf{证明.}
+只需在区间 $[0,L]$ 上进行构造，最后再整体平移 $1$ 即可。令
+\[
+K_n = \binom{n+1}{2}, \quad \Delta_n = K_n - (2n-1) = \binom{n-1}{2}.
+\]
+任意 $k$ 元集的二重和集大小介于 $2k-1$ 与 $K_k$ 之间。反之，固定 $t \in [2k-1, K_k]$，并令 $D = K_k - t$。选取满足 $D \le \Delta_m$ 的最小正整数 $m$，并令
+\[
+s = \Delta_m - D.
+\]
+若 $m=1$，取 $B=\{0\}$。若 $m \ge 2$，则 $0 \le s \le m-2$，此时取
+\[
+B = \{0,1,\dots,m-2\} \cup \{m-1+s\}.
+\]
+记 $L = \max B$，则有 $L \le 2m$ 且
+\[
+|B+B| = K_m - D.
+\]
+\textbf{证明}
+当 $m=1$ 时，结论显然成立。当 $m \ge 2$ 时，若取 $P = \{0,\dots,m-2\}$ 且 $x = m-1+s$，则有 $P+P = [0,2m-4]$，$x+P = [x,x+m-2]$。这两个区间相交或相切，且 $2x$ 贡献了一个额外的点，从而得到 $|B+B| = 2m-1+s = K_m - D$。
+令 $r = k - m$。若 $r = 0$，取 $A = B$，此时计数已正确。若 $r = 1$，取 $A = B \cup \{2L+1\}$。此时 $B+B$、$B+\{2L+1\}$ 与 $\{4L+2\}$ 这三部分互不相交，故 $|A+A| = |B+B|+m+1 = K_m - D = t$。因此可设 $r \ge 2$。选取满足 $r \le p < 2r$ 的奇素数 $p$，并令
+\[ Q = \max(2p, L+p)+1, \quad c_i = Qi + (i^2 \bmod p), \quad 0 \le i < r. \]
+集合 $C = \{c_0,\dots,c_{r-1}\}$ 是 Sidon 集。事实上，由 $Q > 2p-2$ 可知，等式 $c_i+c_j = c_u+c_v$ 首先推出 $i+j = u+v$；再对 $p$ 取模可得 $i^2+j^2 \equiv u^2+v^2 \pmod p$，进而推出 $ij \equiv uv \pmod p$，故 $\{i,j\} = \{u,v\}$。此外，$c_{i+1}-c_i > L$，因此平移集 $B+c_i$ 互不相交。令
+\[ M = c_{r-1}+L+1, \quad S = \{M+c_i : 0 \le i < r\}, \quad A = B \cup S. \]
+此时 $B+B$、$B+S$ 与 $S+S$ 互不相交。此外，$|B+S| = mr$ 且 $|S+S| = K_r$。因此
+\[ |A+A| = (K_m-D)+mr+K_r = K_k-D = t. \]
+最后，由于 $p < 2r$ 且 $L \le 2m$，有
+\[ \max A \le 2r(L+4r+1)+L+1 \le 8k^2+2k+1. \]
+将集合整体平移 $1$ 后，其包含于区间 $[1, 8k^2+2k+2]$ 中。
+\section{主定理的证明}
+\textbf{证明}
+现在我们完成
+\textbf{定理 1.1}
+的证明。$h=1$ 的情形是平凡的。$h=2$ 的情形即命题 7.1。
+固定 $h \ge 3$。取命题 5.3 中的 $a_h$，并在命题 6.5 中取 $\varepsilon = a_h/2$。对于所有充分大的 $k$，命题 5.3 在多项式长度的区间内实现了 $[M_{h,k}, a_h k^h] \setminus \Delta_{h,k}$ 中的每一个值，而命题 6.5 在多项式长度的区间内实现了 $[(a_h/2)k^h, K_{h,k}]$ 中的每一个值。因此，$[M_{h,k}, K_{h,k}] \setminus \Delta_{h,k}$ 中的每一个值都具有多项式直径的见证集。根据 Rajagopal 的值域定理（
+\textbf{定理 1.2}
+），对于所有充分大的 $k$，这恰好就是 $R(h,k)$。
+对于有限个较小的 $k$ 值，有限性是显然的：对每个可达值选取一个见证集，将其平移至正整数中，并取这有限个选择中的最大端点。必要时增大指数 $C_h$，这有限个情形同样被 $k^{C_h}$ 所控制。最后，上述所有构造均在非负区间中进行。通过 $+1$ 平移可将集合置于 $\{1,\dots,N\}$ 中，且不改变 $|hA|$。
+至此
+\textbf{定理 1.1}
+得证。
+\textbf{注记 8.1}（下界）.
+最大值 $K_{h,k} = \binom{h+k-1}{h}$ 可由一个 $B_h$-集达到. 若 $A \subseteq [1,N]$ 满足 $|hA| = K_{h,k}$, 则 $hA \subseteq [h, hN]$, 从而
+\[ \binom{h+k-1}{h} \le hN - h + 1. \]
+因此
+\[ N(h,k) \gg k^h. \]
+由此可见, 多项式上界在 $k$ 的指数增长阶数上具有正确的定性阶, 直至指数的具体取值.
+
+\textbf{参考文献}
+[1] I. Rajagopal, Possible Sizes of Sumsets, arXiv:2510.23022, 2025.
+\end{document}

@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>项目详情 - PaperLean</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$','$$'], ['\\[','\\]']]
+            },
+            options: {
+                // 允许在 <pre> 和 <code> 中渲染 LaTeX（我们会把 LaTeX 内容放到普通 div 中），
+                // 因此移除 'pre' 和 'code' 的跳过设置以确保渲染可用。
+                skipHtmlTags: ['script','noscript','style','textarea']
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    <style>
+        /* 逻辑树连接线及树节点过渡样式 */
+        .tree-line {
+            position: absolute;
+            left: -16px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        /* 🚀 核心修复：为暗色代码框定制专属的优雅滚动条，防止原生滚动条破坏美感 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5); /* 极暗蓝灰轨道 */
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(71, 85, 105, 0.8); /* 优雅的滑块颜色 */
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 1);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-900 p-8">
+    <div class="max-w-5xl mx-auto">
+        <header
+            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-4 flex justify-between items-center">
+            <div>
+                <a href="/" class="text-sm text-indigo-500 hover:underline mb-2 inline-block">← 返回控制面板</a>
+                <h1 class="text-2xl font-bold" id="projectName">加载中...</h1>
+                <p class="text-sm text-slate-500 mt-1">项目 ID: <span id="projectId" class="font-mono"></span></p>
+            </div>
+            <div id="statusBadge" class="flex gap-2">
+                <span class="px-4 py-2 rounded-full font-bold text-sm bg-slate-100 text-slate-500">获取状态中...</span>
+            </div>
+        </header>
+
+
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div id="step-1" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-3">
+                <div class="status-icon text-slate-300"><i data-lucide="circle-dashed" class="w-5 h-5"></i></div>
+                <span class="text-sm font-medium">PDF 切分</span>
+            </div>
+            <div id="step-2" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-3">
+                <div class="status-icon text-slate-300"><i data-lucide="circle-dashed" class="w-5 h-5"></i></div>
+                <span class="text-sm font-medium">章节翻译</span>
+            </div>
+            <div id="step-3" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-3">
+                <div class="status-icon text-slate-300"><i data-lucide="circle-dashed" class="w-5 h-5"></i></div>
+                <span class="text-sm font-medium">Lean 编译</span>
+            </div>
+            <div id="step-4" class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-3">
+                <div class="status-icon text-slate-300"><i data-lucide="circle-dashed" class="w-5 h-5"></i></div>
+                <span class="text-sm font-medium">主定理抽取</span>
+            </div>
+        </div>
+
+        <main class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="w-full p-6 flex justify-between items-center bg-white border-b border-slate-100">
+
+                <div class="flex items-center">
+                    <h2 onclick="toggleAnchors()"
+                        class="text-lg font-bold flex items-center cursor-pointer hover:text-indigo-600 transition-colors mr-4">
+                        <span class="w-2 h-6 bg-indigo-500 rounded mr-2"></span>中英文对照
+                    </h2>
+
+                    <div class="flex flex-col items-start ml-2 gap-1">
+                        <span id="panelStatusBadge"
+                            class="px-3 py-1 rounded-full font-bold text-xs bg-slate-100 text-slate-500 border border-slate-200 transition-all duration-300 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>初始化中...
+                        </span>
+                        <!-- <div id="panelStatusDetail" class="text-[11px] text-slate-500 hidden"></div> -->
+                    </div>
+
+                    <div id="actionButtonsGroup" class="hidden items-center gap-2.5 ml-6 transition-all duration-500">
+                        <button onclick="event.stopPropagation(); handleDownloadPDF();"
+                            class="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold py-1.5 px-3.5 rounded-lg text-xs transition-all border border-indigo-100 shadow-sm active:scale-95">
+                            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 下载 PDF
+                        </button>
+
+                        <button onclick="event.stopPropagation(); handleDownloadSource();"
+                            class="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold py-1.5 px-3.5 rounded-lg text-xs transition-all border border-emerald-100 shadow-sm active:scale-95">
+                            <i data-lucide="code" class="w-3.5 h-3.5"></i> 下载源码
+                        </button>
+                    </div>
+                </div>
+
+                <div onclick="toggleAnchors()"
+                    class="cursor-pointer p-2 hover:bg-slate-50 rounded-lg transition-colors flex items-center justify-center">
+                    <i data-lucide="chevron-down" id="foldIcon"
+                        class="text-slate-400 transition-transform duration-200 transform rotate-[-90deg]"></i>
+                </div>
+            </div>
+
+            <div id="anchorsWrapper" class="px-6 pb-6" style="display: none;">
+                <div id="loadingStatus" class="text-center py-20">
+                    <div
+                        class="animate-spin h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full mx-auto mb-4">
+                    </div>
+                    <p class="text-slate-500 font-medium">正在解析数据，请稍候...</p>
+                </div>
+                <div id="anchorsContainer" class="space-y-4"></div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div id="toggleGraphHeader"
+                    class="w-full p-6 flex justify-between items-center bg-white border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors select-none">
+                    <div class="flex items-center">
+                        <span class="w-2 h-6 bg-green-500 rounded mr-2"></span>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800">Lean 形式化逻辑图谱</h2>
+                            <p class="text-[11px] text-slate-400 mt-0.5 font-medium">数学实体依赖树与 AST 逻辑可视化看板</p>
+                        </div>
+                    </div>
+                    <div class="p-2 flex items-center justify-center">
+                        <i data-lucide="chevron-down" id="graphArrowIcon"
+                            class="text-slate-400 transition-transform duration-200 transform rotate-[-90deg]"></i>
+                    </div>
+                </div>
+
+                <div id="graphContentBody" class="p-6 bg-white" style="display: none;">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div id="logicTree" class="bg-slate-50 p-4 rounded-xl border border-slate-200 min-h-[300px]">
+                            <div class="text-center text-slate-400 py-10 text-sm">正在构建逻辑图谱...</div>
+                        </div>
+                        <div
+                            class="bg-[#1e1e1e] p-4 rounded-xl border border-slate-800 shadow-inner flex flex-col min-h-[300px]">
+                            <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-2">
+                                <div>
+                                    <span class="text-xs font-bold text-slate-300 uppercase tracking-wider"
+                                        id="leanCodeTitle">Lean 4 源码</span>
+                                    <div id="leanCodeSourcePreview"
+                                        class="mt-1 text-[11px] text-slate-400 leading-snug max-h-16 overflow-hidden text-ellipsis"></div>
+                                </div>
+                                <span
+                                    class="px-2 py-0.5 bg-green-900/50 text-green-400 text-[10px] rounded border border-green-800">✅
+                                    Compiled</span>
+                            </div>
+                            <pre id="leanCodeViewer"
+                                class="text-[12px] font-mono text-green-400 whitespace-pre-wrap overflow-y-auto flex-1">-- 点击左侧节点查看对应的的形式化代码...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增：主定理核心成果板块 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div id="toggleTheoremHeader"
+                    class="w-full p-6 flex justify-between items-center bg-white border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors select-none">
+                    <div class="flex items-center">
+                        <span class="w-2 h-6 bg-rose-500 rounded mr-2"></span>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800">核心主定理</h2>
+                            <p class="text-[11px] text-slate-400 mt-0.5 font-medium">论文形式化核心成果清单</p>
+                        </div>
+                    </div>
+                    <div class="p-2 flex items-center justify-center">
+                        <i data-lucide="chevron-down" id="theoremArrowIcon"
+                            class="text-slate-400 transition-transform duration-200 transform rotate-[-90deg]"></i>
+                    </div>
+                </div>
+
+                <div id="theoremContentBody" class="p-6 bg-white" style="display: none;">
+                    <div id="mainTheoremContainer"
+                        class="bg-slate-50 p-4 rounded-xl border border-slate-200 min-h-[200px]">
+                        <div class="text-center text-slate-400 py-10 text-sm">正在加载核心主定理...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="bg-white border border-teal-200 rounded-2xl shadow-sm p-6 mt-4">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-6 bg-teal-500 rounded-full"></span>
+                    <h3 class="text-lg font-bold text-slate-800">Formalization Agent 控制台</h3>
+                </div>
+                <span
+                    class="px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-bold rounded-full flex items-center border border-teal-200">
+                    <span class="w-2 h-2 bg-teal-500 rounded-full mr-1.5 animate-pulse"></span> Agent Online
+                </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 flex flex-col justify-between">
+                    <div class="mb-4">
+                        <textarea id="agentCommandInput" rows="3"
+                            class="w-full border border-slate-200 bg-slate-50/50 rounded-xl p-4 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none resize-none transition-all"
+                            placeholder="请输入自然语言命令控制 Agent（例如：重新拆解当前主定理、汇报 Lean 4 修复日志...）"></textarea>
+                        <button onclick="sendCommandToAgent()"
+                            class="mt-3 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-5 rounded-xl text-sm transition shadow-sm flex items-center gap-1">
+                            <i data-lucide="send" class="w-4 h-4"></i> 发送命令到 Agent
+                        </button>
+                    </div>
+                    <div
+                        class="bg-slate-50 rounded-xl p-3 text-[11px] font-mono text-slate-500 grid grid-cols-2 gap-2 border border-slate-100">
+                        <p><span class="text-slate-400">core:</span> paperlean_agent_v1</p>
+                        <p><span class="text-slate-400">llm:</span> <span id="agentModelName"
+                                class="text-teal-700 font-bold">加载中...</span></p>
+                        <p class="col-span-2 truncate"><span class="text-slate-400">workdir:</span>
+                            /artifacts/projects/<span id="agentProjectId" class="text-slate-700"></span>/</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100 text-left ">
+                    <h4
+                        class="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                        <i data-lucide="activity" class="w-3 h-3 text-slate-400"></i> 最近调用 Trace (点击查看执行内容)
+                    </h4>
+                    <div id="formalizationTraceContainer"
+                        class="relative pl-3 border-l border-slate-200 space-y-1.5 min-h-[30px] mt-2">
+                        <div class="text-[11px] text-slate-400 italic">等待 Pipeline 激活数据总线...</div>
+                    </div>
+                </div>
+                <div id="traceDetailCard"
+                    class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-4 text-left col-span-full">
+                    <details open class="group">
+                        <summary
+                            class="flex items-center justify-between cursor-pointer list-none border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="layers" class="w-5 h-5 text-indigo-500"></i>
+                                <h2 class="text-base font-bold text-slate-800">Trace 执行内容详情</h2>
+                            </div>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                            </span>
+                        </summary>
+
+                        <div id="traceDetailContent" class="mt-4 space-y-3 w-full">
+                        </div>
+                    </details>
+                </div>
+                <!-- 先给整个日志面板套一层打破grid限制的容器，同时全量替换英文为中文 -->
+                <div class="col-span-full w-full">
+                    <details class="group border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm w-full"
+                        open>
+                        <summary
+                            class="flex justify-between items-center p-2 text-[10px] font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 cursor-pointer transition-all list-none select-none w-full">
+                            <div class="flex items-center space-x-1">
+                                <span
+                                    class="transition-transform group-open:rotate-90 text-teal-600 text-[8px]">▶</span>
+                                <span class="font-mono tracking-wide text-teal-600">项目 代理日志 </span>
+                            </div>
+                            <span class="text-[9px] text-slate-500 group-open:hidden">点击展开</span>
+                            <span class="text-[9px] text-slate-500 hidden group-open:inline">点击收起</span>
+                        </summary>
+                        <div id="agentFolderConsole"
+                            class="p-3 bg-white font-mono text-[10px] leading-normal text-slate-800 h-28 overflow-y-auto space-y-1 scrollbar-thin w-full">
+                            <div class="text-slate-500">正在加载当前项目本地沙箱日志管道...</div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        let pollingTimer = null;
+        let formalizationNodes = [];
+
+        if (!projectId) {
+            alert("缺少项目 ID！");
+            window.location.href = '/';
+        }
+        document.getElementById('projectId').innerText = projectId;
+        document.getElementById('agentProjectId').innerText = projectId;
+
+        // 【修复 1】确保 DOM 加载完成后再执行所有逻辑，且只执行一次
+        document.addEventListener('DOMContentLoaded', () => {
+            // 绑定图谱折叠事件（确保节点能找到）
+            const toggleHeader = document.getElementById('toggleGraphHeader');
+            if (toggleHeader) {
+                toggleHeader.addEventListener('click', toggleGraphPanel);
+            }
+            // 绑定主定理折叠事件
+            const theoremHeader = document.getElementById('toggleTheoremHeader');
+            if (theoremHeader) {
+                theoremHeader.addEventListener('click', toggleTheoremPanel);
+            }
+            // 绑定 Agent 控制台相关逻辑（移动后仍需确保事件可用）
+            // （原代码中 sendCommandToAgent 是 onclick 内联绑定，只要 ID 不变就无需改）
+
+            // 【修复 2】只执行一次数据请求+定时器，避免重复
+            if (!pollingTimer) { // 防止重复创建定时器
+                fetchProjectDetails();
+                pollingTimer = setInterval(fetchProjectDetails, 3000);
+            }
+
+            // 确保 Lucide 图标渲染（移动板块后重新渲染图标）
+            if (window.lucide) lucide.createIcons();
+        });
+
+        function toggleAnchors() {
+            const wrapper = document.getElementById('anchorsWrapper');
+            const icon = document.getElementById('foldIcon');
+            const isHidden = wrapper.style.display === 'none';
+            wrapper.style.display = isHidden ? 'block' : 'none';
+            icon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+        }
+        // 🟢 图谱板块折叠控制（结构及逻辑完全对齐上方的中英文对照）
+        function toggleGraphPanel() {
+            const contentBody = document.getElementById('graphContentBody');
+            const arrowIcon = document.getElementById('graphArrowIcon');
+            const isHidden = contentBody.style.display === 'none';
+
+            contentBody.style.display = isHidden ? 'block' : 'none';
+            arrowIcon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+
+            // 防御机制：重新展现时计算图谱尺寸
+            if (isHidden) {
+                setTimeout(() => {
+                    if (typeof renderLogicTree === 'function' && formalizationNodes.length > 0) {
+                        renderLogicTree(formalizationNodes);
+                    }
+                }, 50);
+            }
+        }
+        async function fetchProjectDetails() {
+            try {
+                const res = await fetch(`/api/projects/${projectId}`);
+                const data = await res.json();
+                document.getElementById('projectName').innerText = data.name;
+                // 🟢 新增这一行：将后端实际存储的模型类型，动态渲染到控制台上
+                document.getElementById('agentModelName').innerText = data.agent_type || '未指定模型';
+
+                updateStepStatus(data);
+
+                let fragmentsMap = {};
+                const fragRes = await fetch(
+                    `/artifacts/projects/${projectId}/intermediate/zh_fragments.jsonl?t=${Date.now()}`);
+                if (fragRes.ok) {
+                    const text = await fragRes.text();
+                    text.split('\n').filter(l => l.trim()).forEach(l => {
+                        const frag = JSON.parse(l);
+                        fragmentsMap[frag.id] = frag.content;
+                    });
+                }
+
+                if (data.anchors && data.anchors.length > 0) {
+                    const loadingStatusEl = document.getElementById('loadingStatus');
+                    if (loadingStatusEl) loadingStatusEl.remove();
+                    renderCombinedView(data.anchors, fragmentsMap);
+                }
+
+                // 🛡️ 完善轮询状态机：当成功时，解构定时器并向后端索取形式化树图数据
+                if (data.status === 'success' || data.status === 'fail') {
+                    clearInterval(pollingTimer);
+                    if (data.status === 'success') {
+                        loadFormalizationTree();
+                        loadMainTheorem(); // 新增：加载主定理
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // 🛡️ 修复后的图谱载入函数：带有空数据重试机制
+        let treeRetryCount = 0;
+        async function loadFormalizationTree() {
+            try {
+                const res = await fetch(`/api/projects/${projectId}/formalization?t=${Date.now()}`);
+                const data = await res.json();
+
+                // 兼容处理：支持 data.nodes 或直接是纯数组 data
+                let nodes = [];
+                if (Array.isArray(data)) {
+                    nodes = data;
+                } else if (data && Array.isArray(data.nodes)) {
+                    nodes = data.nodes;
+                }
+
+                // 如果项目成功了但数据暂时为空，且重试次数小于 5 次，则延迟 1 秒后重新抓取（解决落盘时间差）
+                if (nodes.length === 0 && treeRetryCount < 5) {
+                    treeRetryCount++;
+                    console.log(`图谱数据暂未就绪，正在进行第 ${treeRetryCount} 次延迟重试...`);
+                    setTimeout(loadFormalizationTree, 1000);
+                    return;
+                }
+
+                formalizationNodes = nodes;
+                renderLogicTree(formalizationNodes);
+            } catch (e) {
+                console.error("加载图谱失败", e);
+                document.getElementById('logicTree').innerHTML =
+                    '<div class="text-center text-rose-500 py-10 text-sm">❌ 拓扑数据流加载失败，请刷新重试</div>';
+            }
+        }
+
+        // 🛡️ 修复后的逻辑树渲染器：解决空数据不刷新 UI 的 Bug
+        function renderLogicTree(nodes) {
+            const treeContainer = document.getElementById('logicTree');
+
+            // 如果最终确实没有提取到任何逻辑定理节点，覆写 UI，不再提示“正在构建”
+            if (!nodes || nodes.length === 0) {
+                treeContainer.innerHTML =
+                    '<div class="text-center text-slate-400 py-10 text-sm">⚠️ 当前项目未提取到明显的形式化定理/引理节点</div>';
+                return;
+            }
+
+            // 按照节点 ID 中的层级前缀（如 p1_s12_, p1_s22_ 等）进行分组
+            const groupedNodes = {};
+            nodes.forEach(node => {
+                // 提取层级前缀（如 "p1_s12_" 从 "p1_s12_step1"）
+                const match = node.id.match(/^([^_]*_[^_]*_)/);
+                const groupKey = match ? match[1] : 'other';
+                if (!groupedNodes[groupKey]) {
+                    groupedNodes[groupKey] = [];
+                }
+                groupedNodes[groupKey].push(node);
+            });
+
+            // 提取干净的标题：移除"步骤_stepN"前缀
+            function cleanTitle(title) {
+                return title.replace(/^步骤_step\d+\s*\(/, '').replace(/\)$/, '').trim();
+            }
+
+            // 构建层级树的 HTML
+            let html = '<div class="relative">';
+            let groupIndex = 0;
+
+            for (const groupKey in groupedNodes) {
+                const groupNodes = groupedNodes[groupKey];
+                const groupId = `group-${groupIndex}`;
+                const isExpanded = groupIndex === 0; // 默认第一个组展开
+
+                html += `
+                    <details class="group" ${isExpanded ? 'open' : ''}>
+                        <summary class="cursor-pointer select-none mb-3 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center gap-2 font-semibold text-slate-700 list-none">
+                            <span class="inline-flex items-center justify-center w-5 h-5 text-sm transition-transform group-open:rotate-90">▶</span>
+                            <span class="w-3 h-3 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full"></span>
+                            <span>模块 ${groupIndex + 1}</span>
+                            <span class="text-xs text-slate-500 ml-1">(${groupNodes.length} 项)</span>
+                        </summary>
+                        <div class="pl-6 space-y-3 pb-2">`;
+
+                groupNodes.forEach((node, index) => {
+                    const color = node.type === 'Theorem' ? 'bg-rose-100 text-rose-600' :
+                        (node.type === 'Lemma' ? 'bg-indigo-100 text-indigo-600' :
+                            'bg-slate-200 text-slate-700');
+                    const cleanedTitle = cleanTitle(node.title);
+                    const sourceTitle = node.source_section_title ? `${node.source_section_title}` : node.source_anchor_id || '';
+                    const sourcePage = node.source_page ? `页${node.source_page}` : '';
+                    const sourceMeta = [sourceTitle, sourcePage].filter(Boolean).join(' · ');
+
+                    html += `
+                        <div class="relative mb-3 cursor-pointer group/item" onclick="showLeanCode('${node.id}')">
+                            <div class="absolute -left-4 top-2.5 w-2.5 h-2.5 rounded-full bg-white border-2 border-indigo-400 group-hover/item:scale-125 transition-transform"></div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm group-hover/item:border-indigo-400 group-hover/item:shadow-md transition-all ml-2">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-1.5 py-0.5 text-[9px] font-bold uppercase rounded ${color}">${node.type}</span>
+                                    <h4 class="text-sm font-bold text-slate-800">${cleanedTitle || node.title || '未命名节点'}</h4>
+                                </div>
+                                <p class="text-[11px] text-slate-500 leading-tight">${node.description || '无节点描述'}</p>
+                                ${sourceMeta ? `<p class="text-[11px] text-slate-400 mt-1">来源: ${sourceMeta}</p>` : ''}
+                            </div>
+                        </div>`;
+                });
+
+                html += `
+                        </div>
+                    </details>`;
+                groupIndex++;
+            }
+
+            html += '</div>';
+            treeContainer.innerHTML = html;
+        }
+        // 🛡️ 补全函数：切换节点显示对应的高亮 Lean4 代码
+        function showLeanCode(nodeId) {
+            const node = formalizationNodes.find(n => n.id === nodeId);
+            if (!node) return;
+            const viewer = document.getElementById('leanCodeViewer');
+            const title = document.getElementById('leanCodeTitle');
+            const sourcePreview = document.getElementById('leanCodeSourcePreview');
+
+            // 清洁标题：移除"步骤_stepN"前缀
+            const cleanedTitle = node.title.replace(/^步骤_step\d+\s*\(/, '').replace(/\)$/, '').trim();
+            title.innerText = `Lean 4 源码: ${cleanedTitle || node.title}`;
+
+            const sourceParts = [];
+            if (node.source_section_title) sourceParts.push(node.source_section_title);
+            if (node.source_page) sourceParts.push(`页 ${node.source_page}`);
+            if (node.source_snippet) sourceParts.push(node.source_snippet);
+            sourcePreview.textContent = sourceParts.join(' · ');
+
+            let codeHtml = node.lean_code
+                .replace(/(def|lemma|theorem|by|have|exact|sorry)/g, '<span class="text-pink-400">$1</span>')
+                .replace(/(\(|\)|:=|:)/g, '<span class="text-slate-300">$1</span>');
+            viewer.innerHTML = codeHtml;
+        }
+
+        async function sendCommandToAgent() {
+            const projectId = document.getElementById('projectId')?.innerText;
+            if (!projectId) return;
+
+            const input = document.getElementById('agentCommandInput');
+            const command = input.value.trim();
+            if (!command) return;
+
+            // 立即禁用并清空输入，避免等待后端导致 UI 卡壳
+            input.disabled = true;
+            input.value = '';
+            pendingAutoSelectConsoleAgent = true;
+            showPendingConsoleAgentContent(command);
+            try {
+                const response = await fetch(`/api/agent/command`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        project_id: projectId,
+                        command: command
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP 错误！状态码: ${response.status}`);
+                }
+
+                // 解析结果以便日志/错误处理，但不依赖于其完成来恢复输入
+                const result = await response.json();
+                // 主动刷新 trace（异步）
+                pollFormalizationTrace();
+            } catch (error) {
+                console.error(error);
+                addAgentLog('TRACE_ERROR', `指令执行失败: ${error.message}`, 'text-rose-600');
+            } finally {
+                input.disabled = false;
+                if (window.lucide) lucide.createIcons();
+            }
+        }
+
+        function showPendingConsoleAgentContent(command) {
+            const contentBox = document.getElementById('traceDetailContent');
+            const detailCard = document.getElementById('traceDetailCard');
+            if (detailCard) {
+                detailCard.classList.remove('hidden');
+                const details = detailCard.querySelector('details');
+                if (details) details.open = true;
+            }
+            if (contentBox) {
+                contentBox.innerHTML = `
+                    <div class="text-xs space-y-3 text-left animate-fadeIn">
+                        <div class="flex flex-col gap-2 bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800 font-medium">
+                            <div>执行算子: <span class="text-indigo-600 font-bold">Console Agent</span></div>
+                            <div>当前状态: <span class="text-slate-800 font-bold">pending</span></div>
+                            <div>步骤总数: <span class="text-slate-800 font-bold">-</span></div>
+                        </div>
+                        <div class="border border-amber-200 bg-white/90 rounded-2xl p-4 text-slate-700 text-sm">
+                            已发送指令：<code class="font-mono text-[11px] text-slate-800">${command}</code><br/>
+                            正在等待 Console Agent 处理，请稍候...
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 🛡️ 补全函数：控制台 Trace 行追加器
+        function addAgentLog(intent, message, colorClass) {
+            const logsContainer = document.getElementById('agentLogs') || document.getElementById('agentFolderConsole');
+            if (!logsContainer) {
+                console.warn('无法找到日志容器：agentLogs 或 agentFolderConsole');
+                return;
+            }
+            const time = new Date().toLocaleTimeString();
+            const logHtml = `
+                <div class="bg-slate-50 border border-slate-100 rounded-lg p-2 font-mono text-slate-600 animate-fadeIn">
+                    <div class="text-slate-400 mb-0.5">${time} - ${intent}</div>
+                    <div class="${colorClass}">${message}</div>
+                </div>`;
+            logsContainer.insertAdjacentHTML('afterbegin', logHtml);
+            logsContainer.scrollTop = 0;
+        }
+
+        function updateStepStatus(data) {
+            const statusLevels = {
+                'extracting': 0,
+                'translating': 1,
+                'compilinglatex': 1,
+                'compiling': 1,
+                'compilinglean': 2,
+                'finding': 3,
+                'success': 4
+            };
+            const currentLevel = statusLevels[data.current_step];
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`step-${i}`);
+                const iconContainer = el.querySelector('.status-icon');
+                if (i <= currentLevel) {
+                    el.classList.add('border-green-200', 'bg-green-50');
+                    iconContainer.innerHTML = '<i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i>';
+                }
+            }
+
+            // =====================================================================
+            // 🚀 新增缝合逻辑：利用你的 currentLevel 权重值，精准控制新按钮组的显隐
+            // =====================================================================
+            const btnGroup = document.getElementById('actionButtonsGroup');
+            if (btnGroup) {
+                // 当 currentLevel >= 3 时（即代表已经跨越了 step-1 PDF切分 和 step-2 章节翻译）
+                if (currentLevel >= 2) {
+                    btnGroup.classList.remove('hidden');
+                    btnGroup.classList.add('flex'); // 解除禁锢，优雅浮现
+
+                    // 🚀 在这里精准加入！把大模型流式渲染所需的项目物理路径，直接挂载给按钮的 onclick 属性
+                    const pdfBtn = btnGroup.querySelector('button:nth-child(1)'); // 第一个按钮
+                    const texBtn = btnGroup.querySelector('button:nth-child(2)'); // 第二个按钮
+
+                    // 从你的上下文或者外部变量里捞取 projectId（确保你的变量名与外层一致，比如叫 projectId 或者是 data.id）
+                    const activeProjectId = projectId || data.id;
+
+                    if (pdfBtn && texBtn && activeProjectId) {
+                        // 💥 物理对齐：直接动态重写按钮的物理点击弹道，完美防止点击没反应！
+                        pdfBtn.onclick = function (event) {
+                            event.stopPropagation();
+                            window.open(`/artifacts/projects/${activeProjectId}/main.pdf`, '_blank');
+                        };
+                        texBtn.onclick = function (event) {
+                            event.stopPropagation();
+                            window.open(`/artifacts/projects/${activeProjectId}/main.tex`, '_blank');
+                        };
+                    }
+                } else {
+                    btnGroup.classList.remove('flex');
+                    btnGroup.classList.add('hidden'); // 前置阶段未完工，锁死隐藏
+                }
+            }
+            // =====================================================================
+            // 🚀 新增缝合逻辑：同步更新我们在中英文对照右侧新换上的状态胶囊 panelStatusBadge
+            // =====================================================================
+            const panelBadge = document.getElementById('panelStatusBadge');
+            if (panelBadge) {
+                panelBadge.classList.remove('animate-pulse');
+                if (data.status === 'success') {
+                    panelBadge.className =
+                        "px-3 py-1 rounded-full font-bold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5";
+                    panelBadge.innerHTML = `<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>编译成功`;
+                } else if (data.status === 'fail') {
+                    panelBadge.className =
+                        "px-3 py-1 rounded-full font-bold text-xs bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1.5";
+                    panelBadge.innerHTML = `<span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span>编译失败`;
+                } else {
+                    panelBadge.className =
+                        "px-3 py-1 rounded-full font-bold text-xs bg-amber-50 text-amber-700 border border-amber-200 animate-pulse flex items-center gap-1.5";
+                    panelBadge.innerHTML =
+                        `<span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>${data.status_msg || '处理中...'}`;
+                }
+            }
+
+            // 3. 🟢 完好保留你原本的顶部大 Badge 渲染逻辑（成功时吐出顶部的下载 A 标签）
+            const badge = document.getElementById('statusBadge');
+            const panelStatusDetail = document.getElementById('panelStatusDetail');
+            if (panelStatusDetail) {
+                panelStatusDetail.classList.remove('hidden');
+                if (data.status === 'fail') {
+                    panelStatusDetail.className = 'text-[11px] text-rose-700';
+                    panelStatusDetail.innerText = data.status_msg || '项目失败，详情请查看 Trace 网络。';
+                } else if (data.status === 'success') {
+                    panelStatusDetail.className = 'text-[11px] text-slate-500 hidden';
+                    panelStatusDetail.innerText = '';
+                } else {
+                    panelStatusDetail.className = 'text-[11px] text-slate-500';
+                    panelStatusDetail.innerText = data.status_msg || '处理中...';
+                }
+            }
+
+            if (badge) {
+                if (data.status === 'success') {
+                    badge.innerHTML =
+                        `<span class="px-4 py-2 rounded-full font-bold text-sm bg-emerald-100 text-emerald-600">编译完成</span>`;
+                    // badge.innerHTML = `
+                    //     <a href="/artifacts/projects/${projectId}/main.pdf" class="bg-rose-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-rose-600 transition-all">下载 PDF</a>
+                    //     <a href="/artifacts/projects/${projectId}/main.tex" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-900 transition-all">源码</a>
+                    // `;
+                } else if (data.status === 'fail') {
+                    badge.innerHTML =
+                        `<span class="px-4 py-2 rounded-full font-bold text-sm bg-rose-100 text-rose-600">编译熔断</span>`;
+                } else {
+                    badge.innerHTML =
+                        `<span class="px-4 py-2 rounded-full font-bold text-sm bg-amber-100 text-amber-600 animate-pulse">处理中...</span>`;
+                }
+            }
+
+            // 4. 🟢 完好保留并执行 Lucide 图标的动态落谱重绘
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                lucide.createIcons();
+            }
+        }
+
+        function renderCombinedView(anchors, fragmentsMap) {
+            const container = document.getElementById('anchorsContainer');
+            container.innerHTML = anchors.map(anchor => {
+                const rawZh = fragmentsMap[anchor.en_anchor_id] || '等待处理...';
+                // 先对英文片段与中文片段进行 LaTeX 文本宏转换，同时保留数学定界符供 MathJax 渲染
+                const enHtml = processLatexForHtml(anchor.snippet || '');
+                const zhHtml = processLatexForHtml(rawZh);
+                return `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-slate-200 bg-white rounded-xl mb-4 overflow-hidden shadow-sm">
+                    <div class="p-4 border-r border-slate-100 bg-slate-50/30 text-sm font-serif latex-block">${enHtml}</div>
+                    <div class="p-4 bg-white text-[11px] text-slate-800 latex-block">${zhHtml}</div>
+                </div>`;
+            }).join('');
+
+            // 处理完插入后触发 MathJax 渲染
+            scheduleMathJaxRender(container);
+        }
+        // =====================================================================
+        // --- 新增：物理沙箱资产导出控制函数 ---
+        // =====================================================================
+        function handleDownloadPDF() {
+            // 从页面现有的 DOM 节点上安全捞取当前激活的项目 ID
+            const projectId = document.getElementById('projectId').innerText || "09b18644";
+            console.log(`[Export-Action] 正在从工作区 ${projectId} 抽取原始 PDF 资产...`);
+
+            // 真实路由重定向：触发浏览器的原生滑轨文件下载
+            window.open(`/api/projects/${projectId}/download/pdf`, '_blank');
+        }
+
+        function handleDownloadSource() {
+            const projectId = document.getElementById('projectId').innerText || "09b18644";
+            console.log(`[Export-Action] 正在打包项目 ${projectId} 的 Lean 4 形式化源码与 LaTeX 包...`);
+
+            // 真实路由重定向
+            window.open(`/api/projects/${projectId}/download/source`, '_blank');
+        }
+        // =====================================================================
+        // 🟢 增量自愈：沙箱局部日志物理管道打捞渲染引擎
+        // =====================================================================
+        async function pollProjectAgentLogs() {
+            // 动态在页面上捞取当前激活的项目 ID (优先使用 DOM 节点或 URL 参数)
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('id') || document.getElementById('projectId') ?.innerText;
+            if (!projectId) return;
+
+            const consoleEl = document.getElementById('agentFolderConsole');
+            if (!consoleEl) return;
+
+            try {
+                const res = await fetch(`/api/projects/${projectId}/agent-logs`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.logs && data.logs.length > 0) {
+                        consoleEl.innerHTML = data.logs.map(log => {
+                            // 对断点续传、括号补齐、解析成功等微观特征码进行高亮染色
+                            // 1. 警告/断点续传：浅琥珀色背景 + 深琥珀色文字（明亮风格）
+                            if (log.includes('WARNING') || log.includes('断点续传') || log.includes('⚠️')) {
+                                return `<div class="text-amber-700 bg-amber-50 px-1 py-0.5 rounded border-l-2 border-amber-500">${log}</div>`;
+                            }
+                            // 2. 成功：浅青绿色背景 + 深青绿色文字（明亮风格）
+                            if (log.includes('SUCCESS') || log.includes('🎉') || log.includes('成功')) {
+                                return `<div class="text-teal-700 font-bold bg-teal-50 px-1 py-0.5 rounded">${log}</div>`;
+                            }
+                            // 3. 尝试/加载：深靛蓝色文字（无背景，避免杂乱）
+                            if (log.includes('🔄') || log.includes('尝试')) {
+                                return `<div class="text-indigo-700 animate-pulse font-semibold pl-1">${log}</div>`;
+                            }
+                            // 4. 错误：浅红色背景 + 深红色文字（明亮风格）
+                            if (log.includes('ERROR') || log.includes('❌')) {
+                                return `<div class="text-rose-700 bg-rose-50 px-1 py-0.5 rounded border-l-2 border-rose-500">${log}</div>`;
+                            }
+                            // 5. 默认日志：深灰色文字（无背景，匹配明亮页面）
+                            return `<div class="text-slate-700 pl-1">${log}</div>`;
+                        }).join('');
+                        // 物理自动向下滚动对齐
+                        consoleEl.scrollTop = consoleEl.scrollHeight;
+                    }
+                }
+            } catch (err) {
+                console.error("局部沙箱日志读取异常:", err);
+            }
+        }
+
+        // 激活每 2 秒高频打捞机制
+        setInterval(pollProjectAgentLogs, 2000);
+        pollProjectAgentLogs();
+        fetchProjectDetails();
+        pollingTimer = setInterval(fetchProjectDetails, 3000);
+        // 新增：主定理面板折叠控制
+        function toggleTheoremPanel() {
+            const contentBody = document.getElementById('theoremContentBody');
+            const arrowIcon = document.getElementById('theoremArrowIcon');
+            const isHidden = contentBody.style.display === 'none';
+            contentBody.style.display = isHidden ? 'block' : 'none';
+            arrowIcon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+        }
+
+        // 全局调用：打捞并渲染主定理的核心内容
+        async function loadMainTheorem() {
+            const theoremContainer = document.getElementById('mainTheoremContainer');
+            if (!theoremContainer) return;
+
+            try {
+                const res = await fetch(`/api/projects/${projectId}/theorem-manifest`);
+                if (!res.ok) {
+                    // 不暴露错误细节，仅优雅退回
+                    theoremContainer.innerHTML = `<div class="text-slate-400 text-sm">无法读取主定理清单（状态 ${res.status}）</div>`;
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (!data || !data.has_manifest) {
+                    theoremContainer.innerHTML = `
+                <div class="flex items-center gap-2 p-4 bg-amber-50 border border-amber-200 text-amber-700 text-sm rounded-xl animate-pulse">
+                    <span class="inline-block w-2 h-2 bg-amber-500 rounded-full"></span>
+                    <p>${(data && data.msg) ? data.msg : '主定理尚未生成，稍后重试。'}</p>
+                </div>`;
+                    return;
+                }
+
+                const mt = data.manifest || {};
+
+                // 安全渲染各字段
+                const idHtml = mt.title ? `<div class="text-sm font-mono text-rose-600">${mt.title}</div>` : (mt.node_id ? `<div class="text-sm font-mono text-rose-600">${mt.node_id}</div>` : '<div class="text-sm text-slate-400">未命名</div>');
+                let formalText = mt.formal_statement || mt.theorem_desc_zh || mt.theorem_desc_en || mt.theorem_desc || '';
+                // 预处理：把常见的 LaTeX 文本宏转换为 HTML，以便在 MathJax 渲染前显示文本样式
+                formalText = processLatexForHtml(formalText);
+                // 🚀 核心修复：为定理内容增加 overflow-auto 和 max-h-[32rem]，打破死板高度！
+                // 🚀 核心修复：为定理内容增加 overflow-auto 和 max-h-[32rem]，打破死板高度！
+                const formalStmt = formalText ? `<div class="latex-block whitespace-pre-wrap overflow-auto max-h-[32rem] custom-scrollbar">${formalText}</div>` : '<div class="text-slate-400">暂无形式化语句</div>';
+
+                const paramHtml = Object.keys(mt.parameter_constraints || {}).length ?
+                    `<div class="space-y-1 text-xs text-slate-600">${Object.entries(mt.parameter_constraints).map(([k, v]) => `<div><span class="font-mono font-bold text-indigo-600">${k}:</span> ${v}</div>`).join('')}</div>` :
+                    '<div class="text-slate-400">暂无显式约束</div>';
+
+                const coreDefs = Object.keys(mt.core_definitions || {}).length ?
+                    `<div class="space-y-1 text-xs text-slate-600">${Object.entries(mt.core_definitions).map(([k, v]) => {
+                        if (typeof v === 'object') return '';
+                        return `<div><span class="font-bold text-cyan-600 font-mono">${k}:</span> <span title="${v}" class="truncate">${v}</span></div>`;
+                    }).join('')}</div>` :
+                    '<div class="text-slate-400">暂无核心定义</div>';
+
+                const html = `
+            <div class="space-y-4">
+                <div class="bg-gradient-to-br from-white to-rose-50/20 p-5 rounded-2xl border border-rose-100 shadow-sm">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2 py-0.5 bg-rose-100 text-rose-700 text-xs font-bold rounded">Active Theorem</span>
+                        ${idHtml}
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl text-xs text-emerald-400 border border-slate-800 shadow-inner overflow-x-auto overflow-y-auto leading-relaxed">
+                        ${formalStmt}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Parameter Constraints</h4>
+                        ${paramHtml}
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Core Definitions</h4>
+                        ${coreDefs}
+                    </div>
+                </div>
+            </div>
+        `;
+
+                theoremContainer.innerHTML = html;
+                // 使用调度器触发 MathJax 渲染（支持 MathJax 异步加载）
+                scheduleMathJaxRender(theoremContainer);
+
+            } catch (err) {
+                console.error("主定理物理总线打捞异常:", err);
+                theoremContainer.innerHTML = `<div class="text-rose-500 text-xs">成果图谱数据流中断，请检查网络总线。</div>`;
+            }
+        }
+
+        // 挂载到你的初始化轮询环中
+        setInterval(loadMainTheorem, 3000);
+        document.addEventListener("DOMContentLoaded", loadMainTheorem);
+        // 1. 异步打捞并刷新战时 Trace 直播面板的主函数
+        async function pollProjectTraceAndStatus() {
+            const projectId = document.getElementById("projectId").innerText;
+            if (!projectId) return;
+
+            try {
+                const response = await fetch(`/api/project/${projectId}`);
+                const projectData = await response.json();
+
+                // 更新基础状态信息
+                document.getElementById("projectName").innerText = projectData.name;
+
+                // 🎯 核心渲染逻辑：打捞 Trace 拓扑总线
+                const traceContainer = document.getElementById("traceTreeContainer"); // 确保页面上有这个 ID 的 div
+                if (!traceContainer) return;
+
+                const nodes = projectData.trace_nodes || [];
+                if (nodes.length === 0) {
+                    traceContainer.innerHTML = `
+                <div class="text-xs text-slate-400 italic p-4 text-center">
+                    Pipeline 尚未激活或 PDF 解析中，暂无 Agent 战时 Trace 快照流。
+                </div>`;
+                    return;
+                }
+
+                let treeHtml = '';
+                nodes.forEach((node, index) => {
+                    // A. 根据状态机计算节点高亮颜色
+                    let statusColor = 'border-slate-200 bg-slate-50 text-slate-500';
+                    let dotColor = 'bg-slate-300';
+                    let pulseClass = '';
+
+                    if (node.status === 'running') {
+                        statusColor = 'border-amber-300 bg-amber-50 text-amber-800';
+                        dotColor = 'bg-amber-500';
+                        pulseClass = 'animate-ping'; // 处于战时正在执行的节点增加呼吸灯特效
+                    } else if (node.status === 'success') {
+                        statusColor = 'border-emerald-200 bg-emerald-50/50 text-emerald-900';
+                        dotColor = 'bg-emerald-500';
+                    } else if (node.status === 'fail') {
+                        statusColor = 'border-rose-300 bg-rose-50 text-rose-900';
+                        dotColor = 'bg-rose-500';
+                    }
+
+                    // B. 动态拼接拓扑树节点组件
+                    treeHtml += `
+                <div class="relative pl-6 pb-6 last:pb-0">
+                    ${index < nodes.length - 1 ? '<div class="tree-line"></div>' : ''}
+                    
+                    <div class="absolute left-[-5px] top-1.5 w-3 h-3 rounded-full ${dotColor} flex items-center justify-center">
+                        ${node.status === 'running' ? `<span class="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 ${pulseClass}"></span>` : ''}
+                    </div>
+
+                    <div class="p-4 rounded-xl border ${statusColor} shadow-sm transition-all duration-300">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-black uppercase tracking-wider px-2 py-0.5 bg-white/80 rounded border">${node.agent_name}</span>
+                            <span class="text-xs opacity-70 font-mono">${node.status}</span>
+                        </div>
+                        <h4 class="text-sm font-bold mb-2">${node.title}</h4>
+                        
+                        ${node.compiler_error && node.compiler_error !== "None" && node.compiler_error !== "编译器未启动" ? `
+                            <div class="mb-2 p-2 bg-rose-950 text-rose-200 font-mono text-[11px] rounded border border-rose-800 whitespace-pre-wrap max-h-32 overflow-y-auto">
+                                🚨 <strong>Compiler Error Trace:</strong>\n${node.compiler_error}
+                            </div>
+                        ` : ''}
+
+                        <div class="mt-2">
+                            <div class="flex justify-between items-center text-[11px] opacity-60 mb-1">
+                                <span>实时生成代码资产快照 :</span>
+                            </div>
+                            <div class="custom-scrollbar overflow-auto p-3 bg-slate-900 text-slate-100 font-mono text-xs rounded-lg overflow-x-auto max-h-[32rem] whitespace-pre border border-slate-950 shadow-inner">${node.output_code || ''}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+                });
+
+                traceContainer.innerHTML = treeHtml;
+
+            } catch (err) {
+                console.error("前端打捞 Trace 总线异常:", err);
+            }
+        }
+
+        // 2. 挂载到你的初始化生命周期与高频轮询环中 (每 2 秒同步一次大模型最新战况)
+        document.addEventListener("DOMContentLoaded", () => {
+            pollProjectTraceAndStatus();
+            setInterval(pollProjectTraceAndStatus, 2000);
+        });
+
+        // =======================================================================
+        // 🎯 专属数据总线：渲染左侧极简 Trace 并跨卡片联动右侧独立详情卡片
+        // =======================================================================
+        let currentSelectedTraceIndex = null;
+        let cachedFormalNodes = [];
+        let pendingAutoSelectConsoleAgent = false;
+
+        async function pollFormalizationTrace() {
+            const projectId = document.getElementById("projectId").innerText;
+            if (!projectId) return;
+
+            try {
+                const response = await fetch(`/api/project/${projectId}`);
+                const projectData = await response.json();
+
+                const traceContainer = document.getElementById("formalizationTraceContainer");
+                if (!traceContainer) return;
+
+                cachedFormalNodes = projectData.trace_nodes || [];
+
+                if (cachedFormalNodes.length === 0) {
+                    traceContainer.innerHTML =
+                    `<div class="text-[11px] text-slate-400 italic py-1">暂无 Agent 调用快照</div>`;
+                    return;
+                }
+
+                // 2. 极致精简展示：展示每个 agent 组和其最新状态
+                let html = '';
+                cachedFormalNodes.forEach((node, idx) => {
+                    let badgeStyle = 'border-slate-200 bg-slate-50 text-slate-600';
+                    let dotStyle = 'bg-slate-300';
+                    let pulseHtml = '';
+
+                    if (node.status === 'running') {
+                        badgeStyle = 'border-amber-300 bg-amber-50 text-amber-800';
+                        dotStyle = 'bg-amber-500';
+                        pulseHtml =
+                            `<span class="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75 animate-ping"></span>`;
+                    } else if (node.status === 'success') {
+                        badgeStyle = 'border-emerald-200 bg-emerald-50 text-emerald-900';
+                        dotStyle = 'bg-emerald-500';
+                    } else if (node.status === 'fail') {
+                        badgeStyle = 'border-rose-200 bg-rose-50 text-rose-900';
+                        dotStyle = 'bg-rose-500';
+                    }
+
+                    const stepCount = Array.isArray(node.steps) ? node.steps.length : 0;
+                    const isSelected = currentSelectedTraceIndex === idx;
+                    const activeClass = isSelected ? 'ring-2 ring-indigo-500 shadow-sm font-bold bg-white' :
+                        'hover:bg-slate-100/70';
+
+                    html += `
+                <div class="relative group text-left cursor-pointer" onclick="selectTraceNode(${idx})">
+                    <div class="absolute left-[-17px] top-2 w-1.5 h-1.5 rounded-full ${dotStyle} border border-white flex items-center justify-center">
+                        ${pulseHtml}
+                    </div>
+                    <div class="flex items-center justify-between p-1.5 rounded-lg border text-[11px] transition-all duration-150 ${badgeStyle} ${activeClass}">
+                        <div class="truncate pr-2">
+                            <div class="font-semibold">${node.agent_name}</div>
+                            <div class="text-[10px] text-slate-500">执行步骤 ${stepCount} 步</div>
+                        </div>
+                        <span class="font-mono text-[9px] uppercase tracking-wider scale-90 px-1 rounded bg-white/80">${node.status}</span>
+                    </div>
+                </div>
+            `;
+                });
+
+                traceContainer.innerHTML = html;
+
+                if (pendingAutoSelectConsoleAgent) {
+                    const consoleIndex = cachedFormalNodes.map(n => (n.agent_name || '').trim()).lastIndexOf('Console Agent');
+                    if (consoleIndex !== -1) {
+                        pendingAutoSelectConsoleAgent = false;
+                        currentSelectedTraceIndex = consoleIndex;
+                        renderTraceToNewSection(cachedFormalNodes[consoleIndex]);
+                        try {
+                            const leftNode = traceContainer.children[consoleIndex];
+                            if (leftNode) {
+                                leftNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                            const detailCard = document.getElementById('traceDetailCard');
+                            if (detailCard) {
+                                detailCard.classList.remove('hidden');
+                                detailCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                const details = detailCard.querySelector('details');
+                                if (details) details.open = true;
+                            }
+                        } catch (e) {
+                            console.warn('auto-select highlight failed', e);
+                        }
+                        return;
+                    }
+                }
+
+                if (currentSelectedTraceIndex !== null && cachedFormalNodes[currentSelectedTraceIndex]) {
+                    renderTraceToNewSection(cachedFormalNodes[currentSelectedTraceIndex]);
+                }
+
+            } catch (err) {
+                console.error("打捞 Agent 流程总线异常:", err);
+            }
+        }
+
+        // 🎯 点击跨卡片联动核心：用户点击左侧极简节点时触发，显化右侧新面板并刷入内容
+        function selectTraceNode(index) {
+            currentSelectedTraceIndex = index;
+            if (cachedFormalNodes[index]) {
+                // 1. 显化右侧独立的 Trace 详情卡片
+                const detailCard = document.getElementById("traceDetailCard");
+                if (detailCard) detailCard.classList.remove("hidden");
+
+                // 2. 灌入具体执行内容
+                renderTraceToNewSection(cachedFormalNodes[index]);
+
+                // 3. 自动展开详情折叠框
+                const details = detailCard ?.querySelector('details');
+                if (details) details.open = true;
+            }
+            pollFormalizationTrace(); // 刷新高亮样式
+        }
+
+        // 🎯 独立内容渲染算子：输出具体的代码资产或编译报错信息到新卡片中
+        function renderTraceToNewSection(node) {
+            const contentBox = document.getElementById("traceDetailContent");
+            if (!contentBox) return;
+
+            const originalSteps = Array.isArray(node.steps) && node.steps.length ? node.steps : [{
+                status: node.status,
+                title: node.title,
+                compiler_error: node.compiler_error,
+                output_code: node.output_code || '-- 暂无代码资产返回 --'
+            }];
+
+            // 倒序显示：最新的步骤在最上面（不修改原数组）
+            const steps = originalSteps.slice().reverse();
+
+            const totalSteps = originalSteps.length;
+            const stepsHtml = steps.map((step, idx) => {
+                // 预处理 step 输出中的 LaTeX 文本宏，保留数学块（\[\] / $$）供 MathJax 处理
+                step.output_code = processLatexForHtml(step.output_code || '');
+
+                // 计算是否为最新（倒序后第一项）
+                const isLatest = idx === 0;
+
+                let stepColor = 'bg-slate-50 border-slate-200 text-slate-700';
+                let dotStyle = 'bg-slate-400';
+                if (isLatest) {
+                    stepColor = 'bg-white border-indigo-200 text-slate-900 ring-2 ring-indigo-400 shadow-md';
+                    dotStyle = 'bg-indigo-500';
+                }
+                if (step.status === 'running') {
+                    stepColor = 'bg-amber-50 border-amber-200 text-amber-900';
+                    dotStyle = 'bg-amber-500';
+                } else if (step.status === 'success') {
+                    stepColor = 'bg-emerald-50 border-emerald-200 text-emerald-900';
+                    dotStyle = 'bg-emerald-500';
+                } else if (step.status === 'fail') {
+                    stepColor = 'bg-rose-50 border-rose-200 text-rose-900';
+                    dotStyle = 'bg-rose-500';
+                }
+
+                const errorHtml = step.compiler_error && step.compiler_error !== 'None' && step.compiler_error !== '编译器未启动' ?
+                    `<div class="p-2 rounded-lg bg-rose-950 text-rose-200 font-mono text-xs whitespace-pre-wrap overflow-y-auto max-h-24 border border-rose-800 mb-2">🚨 <strong>异常 Trace:</strong>\n${step.compiler_error}</div>` : '';
+
+                // 时间戳
+                const ts = step.timestamp || step.time || step.created_at || step.ts || step.date || '';
+                const tsHtml = ts ? `<span class="text-[10px] text-slate-400 ml-2">${ts}</span>` : '';
+
+                return `
+                <div class="border ${stepColor} rounded-2xl p-3 mb-3 shadow-sm">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full ${dotStyle}"></span>
+                        <div class="text-[11px] font-semibold">步骤 ${totalSteps - idx}: ${step.title}${tsHtml}</div>
+                        <span class="ml-auto text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/90 font-mono">${step.status}</span>
+                    </div>
+                    <details class="bg-transparent">
+                        <summary class="cursor-pointer text-xs text-slate-400 mb-2">展开/折叠 详细内容</summary>
+                        ${errorHtml}
+                        <div class="latex-block p-3 bg-slate-950 text-slate-100 text-[11px] rounded-lg overflow-x-auto whitespace-pre-wrap border border-slate-800 max-h-72">${step.output_code || '-- 暂无代码资产返回 --'}</div>
+                    </details>
+                </div>
+            `;
+            }).join('');
+
+            contentBox.innerHTML = `
+        <div class="text-xs space-y-3 text-left animate-fadeIn">
+            <div class="flex flex-col gap-2 bg-slate-100 border p-3 rounded-xl text-slate-600 font-medium">
+                <div>执行算子: <span class="text-indigo-600 font-bold">${node.agent_name}</span></div>
+                <div>当前状态: <span class="text-slate-800 font-bold">${node.status}</span></div>
+                <div>步骤总数: <span class="text-slate-800 font-bold">${steps.length}</span></div>
+            </div>
+            <div class="space-y-2">
+                ${stepsHtml}
+            </div>
+        </div>
+    `;
+
+            // 使用调度器触发 MathJax 渲染（支持 MathJax 异步加载）
+            scheduleMathJaxRender(contentBox);
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // 🟢 挂载至主周期轮询环（每 2 秒无感高频同步战况）
+        document.addEventListener("DOMContentLoaded", () => {
+            pollFormalizationTrace();
+            setInterval(pollFormalizationTrace, 2000);
+        });
+
+        // MathJax 渲染调度器：如果 MathJax 尚未加载，重试直到可用或耗尽重试次数
+        function scheduleMathJaxRender(element, retries = 15, delay = 200) {
+            try {
+                if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+                    MathJax.typesetPromise([element]).catch((e) => console.warn('MathJax 渲染失败', e));
+                    return;
+                }
+            } catch (e) {
+                console.warn('MathJax 调用异常', e);
+            }
+            if (retries <= 0) return;
+            setTimeout(() => scheduleMathJaxRender(element, retries - 1, delay), delay);
+        }
+
+        // 预处理 LaTeX 文本宏为 HTML：隔离数学块、转换常见环境与文本宏，最后恢复数学占位
+        function processLatexForHtml(text) {
+            if (!text) return '';
+
+            // 规范化：JSON 中有时会出现双反斜线，先把连续的双反斜线恢复为单个反斜线
+            let src = String(text).replace(/\\\\/g, '\\');
+
+            // 提取所有数学块（$$...$$, $...$, \[...\], \(...\)）并以占位符代替
+            const mathBlocks = [];
+            const placeholder = i => `__MATH_PLACEHOLDER_${i}__`;
+            const mathRegex = /\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)|\$\$([\s\S]*?)\$\$|\$([^\$][\s\S]*?)\$/g;
+            src = src.replace(mathRegex, function (match) {
+                const idx = mathBlocks.length;
+                mathBlocks.push(match);
+                return placeholder(idx);
+            });
+
+            // 对非数学文本做最小的 HTML 转义
+            let out = src.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            // 把常见的 LaTeX 环境转换为 HTML
+            out = out.replace(/\\begin\{abstract\}([\s\S]*?)\\end\{abstract\}/g, '<div class="abstract">$1</div>');
+            out = out.replace(/\\title\{([^}]*)\}/g, '<h3 class="doc-title">$1</h3>');
+            out = out.replace(/\\date\{([^}]*)\}/g, '<div class="doc-date text-xs text-slate-500">$1</div>');
+            out = out.replace(/\\section\{([^}]*)\}/g, '<h4 class="doc-section">$1</h4>');
+
+            // 文本宏替换：\textbf, \emph, \textit
+            out = out.replace(/\\textbf\{([^}]*)\}/g, '<strong>$1</strong>');
+            out = out.replace(/\\emph\{([^}]*)\}/g, '<em>$1</em>');
+            out = out.replace(/\\textit\{([^}]*)\}/g, '<em>$1</em>');
+
+            // 换行命令
+            out = out.replace(/\\newline/g, '<br/>').replace(/\\\\/g, '<br/>');
+
+            // 恢复数学占位符为原始数学表达（不做转义，以便 MathJax 识别）
+            if (mathBlocks.length > 0) {
+                for (let i = 0; i < mathBlocks.length; i++) {
+                    const ph = placeholder(i);
+                    // 采用全局替换
+                    out = out.split(ph).join(mathBlocks[i]);
+                }
+            }
+
+            return out;
+        }
+    </script>
+</body>
+
+</html>

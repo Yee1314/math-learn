@@ -1,0 +1,122 @@
+[
+    {
+        "id": "p1_s12_step1",
+        "type": "Lemma",
+        "source_anchor_id": "p1_s12",
+        "source_page": 1,
+        "source_section_id": "0",
+        "source_section_title": "Front Matter",
+        "source_snippet": "Polynomial compression for fixed-fold sumset sizes\nDraft\nApril 29, 2026\nAbstract\nFor fixed h, let N(h,k) be the least N such that every cardinality |hA| attained by a\nk-element set of integers is also attained by a k-element subset of {1,...,N}. We prove,\nusing Rajagopal’s fixed-h theorem on the range of possible values of |hA|, that\nN(h,k)≤kCh\nfor every fixed h. The new ingredient is a polynomial-diameter replacement for the sparse\ngeometric blocks in Rajagopal’s large-value construction. The replacement is carried out\nat the level of the low-degree Hilbert functions, which are the only data relevant to h-fold\nsumsets when h is fixed.",
+        "title": "步骤_step1 (定义 N(h,k) 为最小整数...)",
+        "description": "定义 N(h,k) 为最小整数 N，使得任何 k-元整数集 A 的 h-重和集大小 |hA| 都能被某个位于 [1,N] 内的 k-元子集达到 [核心键点: 固定h，问题转化为寻找足够小的区间来压缩和集大小集合; 来源: p1_s12 页1]",
+        "lean_code": "def N (h k : ℕ) : ℕ := sorry"
+    },
+    {
+        "id": "p1_s12_step2",
+        "type": "Theorem",
+        "source_anchor_id": "p1_s12",
+        "source_page": 1,
+        "source_section_id": "0",
+        "source_section_title": "Front Matter",
+        "source_snippet": "Polynomial compression for fixed-fold sumset sizes\nDraft\nApril 29, 2026\nAbstract\nFor fixed h, let N(h,k) be the least N such that every cardinality |hA| attained by a\nk-element set of integers is also attained by a k-element subset of {1,...,N}. We prove,\nusing Rajagopal’s fixed-h theorem on the range of possible values of |hA|, that\nN(h,k)≤kCh\nfor every fixed h. The new ingredient is a polynomial-diameter replacement for the sparse\ngeometric blocks in Rajagopal’s large-value construction. The replacement is carried out\nat the level of the low-degree Hilbert functions, which are the only data relevant to h-fold\nsumsets when h is fixed.",
+        "title": "步骤_step2 (引用 Rajagopal 的固...)",
+        "description": "引用 Rajagopal 的固定-h 定理，该定理刻画了 |hA| 所有可能的取值 [核心键点: Rajagopal 定理给出了固定 h 下 |hA| 的取值范围的有限性; 来源: p1_s12 页1]",
+        "lean_code": "theorem rajagopal_fixed_h (h k : ℕ) : ∃ (C : ℕ), ∀ (A : Finset ℤ), A.card = k → |h • A| ≤ C := sorry"
+    },
+    {
+        "id": "p1_s12_step3",
+        "type": "Theorem",
+        "source_anchor_id": "p1_s12",
+        "source_page": 1,
+        "source_section_id": "0",
+        "source_section_title": "Front Matter",
+        "source_snippet": "Polynomial compression for fixed-fold sumset sizes\nDraft\nApril 29, 2026\nAbstract\nFor fixed h, let N(h,k) be the least N such that every cardinality |hA| attained by a\nk-element set of integers is also attained by a k-element subset of {1,...,N}. We prove,\nusing Rajagopal’s fixed-h theorem on the range of possible values of |hA|, that\nN(h,k)≤kCh\nfor every fixed h. The new ingredient is a polynomial-diameter replacement for the sparse\ngeometric blocks in Rajagopal’s large-value construction. The replacement is carried out\nat the level of the low-degree Hilbert functions, which are the only data relevant to h-fold\nsumsets when h is fixed.",
+        "title": "步骤_step3 (证明 N(h,k) ≤ k^{...)",
+        "description": "证明 N(h,k) ≤ k^{C h}，其中 C 为某个依赖于 h 的常数 [核心键点: 构造具有多项式直径的块，代替 Rajagopal 原始构造中的稀疏几何块 ; 来源: p1_s12 页1]",
+        "lean_code": "theorem N_polynomial_bound (h k : ℕ) : ∃ (C : ℕ), N h k ≤ k ^ (C * h) := sorry"
+    },
+    {
+        "id": "p1_s12_step4",
+        "type": "Lemma",
+        "source_anchor_id": "p1_s12",
+        "source_page": 1,
+        "source_section_id": "0",
+        "source_section_title": "Front Matter",
+        "source_snippet": "Polynomial compression for fixed-fold sumset sizes\nDraft\nApril 29, 2026\nAbstract\nFor fixed h, let N(h,k) be the least N such that every cardinality |hA| attained by a\nk-element set of integers is also attained by a k-element subset of {1,...,N}. We prove,\nusing Rajagopal’s fixed-h theorem on the range of possible values of |hA|, that\nN(h,k)≤kCh\nfor every fixed h. The new ingredient is a polynomial-diameter replacement for the sparse\ngeometric blocks in Rajagopal’s large-value construction. The replacement is carried out\nat the level of the low-degree Hilbert functions, which are the only data relevant to h-fold\nsumsets when h is fixed.",
+        "title": "步骤_step4 (在低次希尔伯特函数的层面实施替...)",
+        "description": "在低次希尔伯特函数的层面实施替换，这正是固定 h 时与 h 重和集相关的唯一数据 [核心键点: 希尔伯特函数的低次部分控制着多项式压缩的可能性; 来源: p1_s12 页1]",
+        "lean_code": "definition hilbert_function (A : Finset ℕ) (d : ℕ) : ℕ := sorry"
+    },
+    {
+        "id": "p1_s22_step1",
+        "type": "Lemma",
+        "source_anchor_id": "p1_s22",
+        "source_page": 1,
+        "source_section_id": "1",
+        "source_section_title": "1 Introduction",
+        "source_snippet": "1 Introduction\nFor a finite set A ⊂ Z and a positive integer h, write\nhA = {a +···+a : a ∈ A}\n1 h i\nwith repetitions allowed. Define\nR(h,k) = {|hA| : A ⊂ Z, |A| = k}.\nLet N(h,k) be the least positive integer N such that\nR(h,k) = {|hA| : A ⊆ {1,...,N}, |A| = k}.\nEquivalently, one may work in intervals [0,N −1] and translate at the end.\nThe purpose of this note is to prove the following polynomial compression bound.",
+        "title": "步骤_step1 (介绍基本符号和定义：对于有限整...)",
+        "description": "介绍基本符号和定义：对于有限整数集A和正整数h，hA表示所有可能的h个元素和（允许重复）的集合。 [核心键点: 定义hA和集合R(h,k); 来源: p1_s22 页1]",
+        "lean_code": "def hA (A : Finset ℤ) (h : ℕ) : Finset ℤ := ...\ndef R (h k : ℕ) : Set ℕ := ..."
+    },
+    {
+        "id": "p1_s22_step2",
+        "type": "Lemma",
+        "source_anchor_id": "p1_s22",
+        "source_page": 1,
+        "source_section_id": "1",
+        "source_section_title": "1 Introduction",
+        "source_snippet": "1 Introduction\nFor a finite set A ⊂ Z and a positive integer h, write\nhA = {a +···+a : a ∈ A}\n1 h i\nwith repetitions allowed. Define\nR(h,k) = {|hA| : A ⊂ Z, |A| = k}.\nLet N(h,k) be the least positive integer N such that\nR(h,k) = {|hA| : A ⊆ {1,...,N}, |A| = k}.\nEquivalently, one may work in intervals [0,N −1] and translate at the end.\nThe purpose of this note is to prove the following polynomial compression bound.",
+        "title": "步骤_step2 (定义N(h,k)为使R(h,k...)",
+        "description": "定义N(h,k)为使R(h,k)可由{1,...,N}的子集达到的最小正整数。 [核心键点: 定义N(h,k)的存在性; 来源: p1_s22 页1]",
+        "lean_code": "noncomputable def N (h k : ℕ) : ℕ := ..."
+    },
+    {
+        "id": "p1_s22_step3",
+        "type": "Lemma",
+        "source_anchor_id": "p1_s22",
+        "source_page": 1,
+        "source_section_id": "1",
+        "source_section_title": "1 Introduction",
+        "source_snippet": "1 Introduction\nFor a finite set A ⊂ Z and a positive integer h, write\nhA = {a +···+a : a ∈ A}\n1 h i\nwith repetitions allowed. Define\nR(h,k) = {|hA| : A ⊂ Z, |A| = k}.\nLet N(h,k) be the least positive integer N such that\nR(h,k) = {|hA| : A ⊆ {1,...,N}, |A| = k}.\nEquivalently, one may work in intervals [0,N −1] and translate at the end.\nThe purpose of this note is to prove the following polynomial compression bound.",
+        "title": "步骤_step3 (指出等价的工作区间可以平移至[...)",
+        "description": "指出等价的工作区间可以平移至[0,N-1]而不影响结果。 [核心键点: 平移不变性; 来源: p1_s22 页1]",
+        "lean_code": "lemma translation_invariance (A : Finset ℤ) (h : ℕ) : ... :="
+    },
+    {
+        "id": "p1_s22_step4",
+        "type": "Theorem",
+        "source_anchor_id": "p1_s22",
+        "source_page": 1,
+        "source_section_id": "1",
+        "source_section_title": "1 Introduction",
+        "source_snippet": "1 Introduction\nFor a finite set A ⊂ Z and a positive integer h, write\nhA = {a +···+a : a ∈ A}\n1 h i\nwith repetitions allowed. Define\nR(h,k) = {|hA| : A ⊂ Z, |A| = k}.\nLet N(h,k) be the least positive integer N such that\nR(h,k) = {|hA| : A ⊆ {1,...,N}, |A| = k}.\nEquivalently, one may work in intervals [0,N −1] and translate at the end.\nThe purpose of this note is to prove the following polynomial compression bound.",
+        "title": "步骤_step4 (声明本文的主要目标是证明一个多...)",
+        "description": "声明本文的主要目标是证明一个多项式压缩界。 [核心键点: 论文目标; 来源: p1_s22 页1]",
+        "lean_code": "theorem polynomial_compression_bound : ... :="
+    },
+    {
+        "id": "p1_s999_step1",
+        "type": "Theorem",
+        "source_anchor_id": "p1_s999",
+        "source_page": 1,
+        "source_section_id": "1",
+        "source_section_title": "1 Introduction",
+        "source_snippet": "Theorem 1.1. For every fixed h ≥ 1 there is a constant C such that, for all k ≥ 2,\nh\nN(h,k) ≤ kC h.\nThe proof uses Rajagopal’s theorem on the range of possible fixed-fold sumset sizes. Put\n(cid:18) (cid:19)\nh+k−1\nM = hk−h+1, K = ,\nh,k h,k\nh\nand define\nmin(h,k)−3\n(cid:91)\n∆ = [M +ℓh+1, M +ℓh+(h−2−ℓ)].\nh,k h,k h,k\nℓ=0\nHere and below, [u,v] denotes the set of integers n with u ≤ n ≤ v; if u > v the interval is\nempty.\n1",
+        "title": "步骤_step1 (提出定理及其条件：对每个固定 ...)",
+        "description": "提出定理及其条件：对每个固定 h ≥ 1，存在常数 C，使得对所有 k ≥ 2，有上界不等式 N(h,k) ≤ k^{C h}。 [核心键点: 定理陈述：上界估计 N(h,k) ≤ k^{C h}; 来源: p1_s999 页1]",
+        "lean_code": "theorem theorem_1_1 (h : ℕ) (hpos : h ≥ 1) : ∃ (C : ℝ), ∀ (k : ℕ) (kpos : k ≥ 2), N h k ≤ k^(C * h) := by\n  sorry"
+    },
+    {
+        "id": "p1_s999_step2",
+        "type": "Lemma",
+        "source_anchor_id": "p1_s999",
+        "source_page": 1,
+        "source_section_id": "1",
+        "source_section_title": "1 Introduction",
+        "source_snippet": "Theorem 1.1. For every fixed h ≥ 1 there is a constant C such that, for all k ≥ 2,\nh\nN(h,k) ≤ kC h.\nThe proof uses Rajagopal’s theorem on the range of possible fixed-fold sumset sizes. Put\n(cid:18) (cid:19)\nh+k−1\nM = hk−h+1, K = ,\nh,k h,k\nh\nand define\nmin(h,k)−3\n(cid:91)\n∆ = [M +ℓh+1, M +ℓh+(h−2−ℓ)].\nh,k h,k h,k\nℓ=0\nHere and below, [u,v] denotes the set of integers n with u ≤ n ≤ v; if u > v the interval is\nempty.\n1",
+        "title": "步骤_step2 (说明证明方法：使用 Rajag...)",
+        "description": "说明证明方法：使用 Rajagopal 定理，并引入记号 M_{h,k}、K_{h,k} 和集合 Δ_{h,k} 的定义。 [核心键点: 定义记号：M := hk - h + 1, K := C(h+k-1, h), Δ := 一些区间的并集; 来源: p1_s999 页1]",
+        "lean_code": "noncomputable def M (h k : ℕ) : ℕ := h*k - h + 1\nnoncomputable def K (h k : ℕ) : ℕ := Nat.choose (h+k-1) h\ndef Delta (h k : ℕ) : Set ℕ :=\n  ⋃ (ℓ : ℕ) (_ : ℓ ≤ min h k - 3), \n    Icc (M h k + ℓ*h + 1) (M h k + ℓ*h + (h-2-ℓ))"
+    }
+]

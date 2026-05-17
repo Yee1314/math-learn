@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{etoolbox}
+
+% 1. 自定义定理样式实现标题后强制换行
+\newtheoremstyle{break}% 样式名称
+  {\topsep}{\topsep}% 环境上下间距
+  {\normalfont}% 正文字体
+  {}% 缩进量
+  {\bfseries}{.}% 头部字体和标点
+  {\newline}% 头部后的间距：设置为 \newline 即可实现完美的换行效果
+  {}% 头部时间/附加参数规范
+
+% 应用新样式并声明常用的定理类环境
+\theoremstyle{break}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\newtheorem{definition}[theorem]{定义}
+
+% 2. 利用 etoolbox 宏包动态修补 proof 环境，使其标题后自动换行
+\patchcmd{\proof}{\item[\hskip\labelsep\itshape#1\@addpunct{.}]}{\item[\hskip\labelsep\itshape#1\@addpunct{.}]\hfill\par}{}{}
+
+\begin{document}
+\textbf{固定重数和的集合大小的多项式压缩}
+
+\textbf{草稿}
+
+\textbf{2026年4月29日}
+
+\textbf{摘要}
+
+对于固定的 $h$，令 $N(h,k)$ 为最小的 $N$，使得每一个由 $k$ 元整数集所达到的 $|hA|$ 的基数，也都能被 $\{1,\dots,N\}$ 的某个 $k$ 元子集所达到。我们利用 Rajagopal 关于 $|hA|$ 的可能取值范围的固定-h定理证明：对每个固定的 $h$ 有
+\[ N(h,k) \le k^{Ch} \]
+成立。新的关键在于用多项式直径的块替换 Rajagopal 的大值构造中的稀疏几何块。该替换在低次希尔伯特函数的层面进行，当 $h$ 固定时，低次希尔伯特函数是唯一与 $h$ 重和集相关的数据。
+对于一个有限集 $A \subset \mathbb{Z}$ 和一个正整数 $h$，记
+\[ hA = \{a_1 + \cdots + a_h : a_i \in A\} \]
+（允许重复）。定义
+\[ R(h,k) = \{|hA| : A \subset \mathbb{Z}, |A| = k\}. \]
+令 $N(h,k)$ 为满足以下条件的最小正整数 $N$：
+\[ R(h,k) = \{|hA| : A \subseteq \{1,\dots,N\}, |A| = k\}. \]
+等价地，我们可以在区间 $[0,N-1]$ 上工作，并在最后进行平移。
+本文的目的是证明以下多项式压缩界。
+\textbf{定理 1.1.} 对每个固定的 $h\geq 1$，存在常数 $C$，使得对所有 $k\geq 2$，有
+$$N(h,k) \leq k^{C h}.$$
+证明使用了 Rajagopal 关于可能的固定重数和的集合大小的范围的定理。设
+$$M_{h,k}=hk-h+1,\quad K_{h,k}=\binom{h+k-1}{h},$$
+并定义
+$$\Delta_{h,k}=\bigcup_{\ell=0}^{\min(h,k)-3}[M_{h,k}+\ell h+1,\,M_{h,k}+\ell h+(h-2-\ell)].$$
+这里及以下，$[u,v]$ 表示整数 $n$ 满足 $u\leq n\leq v$ 的集合；若 $u>v$，则该区间为空。
+\end{document}

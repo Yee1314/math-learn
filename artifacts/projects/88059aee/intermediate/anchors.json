@@ -1,0 +1,23 @@
+[
+  {
+    "en_anchor_id": "p1_s12",
+    "page": 1,
+    "section_id": "0",
+    "section_title": "Front Matter",
+    "snippet": "Polynomial compression for fixed-fold sumset sizes\nDraft\nApril 29, 2026\nAbstract\nFor fixed h, let N(h,k) be the least N such that every cardinality |hA| attained by a\nk-element set of integers is also attained by a k-element subset of {1,...,N}. We prove,\nusing Rajagopal’s fixed-h theorem on the range of possible values of |hA|, that\nN(h,k)≤kCh\nfor every fixed h. The new ingredient is a polynomial-diameter replacement for the sparse\ngeometric blocks in Rajagopal’s large-value construction. The replacement is carried out\nat the level of the low-degree Hilbert functions, which are the only data relevant to h-fold\nsumsets when h is fixed."
+  },
+  {
+    "en_anchor_id": "p1_s22",
+    "page": 1,
+    "section_id": "1",
+    "section_title": "1 Introduction",
+    "snippet": "1 Introduction\nFor a finite set A ⊂ Z and a positive integer h, write\nhA = {a +···+a : a ∈ A}\n1 h i\nwith repetitions allowed. Define\nR(h,k) = {|hA| : A ⊂ Z, |A| = k}.\nLet N(h,k) be the least positive integer N such that\nR(h,k) = {|hA| : A ⊆ {1,...,N}, |A| = k}.\nEquivalently, one may work in intervals [0,N −1] and translate at the end.\nThe purpose of this note is to prove the following polynomial compression bound."
+  },
+  {
+    "en_anchor_id": "p1_s999",
+    "page": 1,
+    "section_id": "1",
+    "section_title": "1 Introduction",
+    "snippet": "Theorem 1.1. For every fixed h ≥ 1 there is a constant C such that, for all k ≥ 2,\nh\nN(h,k) ≤ kC h.\nThe proof uses Rajagopal’s theorem on the range of possible fixed-fold sumset sizes. Put\n(cid:18) (cid:19)\nh+k−1\nM = hk−h+1, K = ,\nh,k h,k\nh\nand define\nmin(h,k)−3\n(cid:91)\n∆ = [M +ℓh+1, M +ℓh+(h−2−ℓ)].\nh,k h,k h,k\nℓ=0\nHere and below, [u,v] denotes the set of integers n with u ≤ n ≤ v; if u > v the interval is\nempty.\n1"
+  }
+]

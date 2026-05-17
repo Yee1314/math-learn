@@ -1,0 +1,9 @@
+{
+    "node_id": "p1_s999",
+    "title": "固定重数和集合大小的多项式压缩定理",
+    "theorem_desc_en": "\\textbf{Theorem 1.1.} For each fixed $h\\geq 1$, there exists a constant $C$ such that for all $k\\geq 2$, we have $$N(h,k) \\leq k^{C h}.$$",
+    "theorem_desc_zh": "\\textbf{定理1.1.} 对每个固定的 $h\\geq 1$，存在常数 $C$，使得对所有 $k\\geq 2$，有 $$N(h,k) \\leq k^{C h}$$ 成立。",
+    "proof_strategy": "证明首先利用 Rajagopal 关于固定重数和 $|hA|$ 可能取值范围的结构定理，将问题转化为考察集合 $A$ 在某个界 $N(h,k)$ 内能否实现所有可能的和集大小。关键步骤在于用‘多项式直径的块’替换 Rajagopal 原始构造中的稀疏几何块，这使得对每个固定 $h$，直径被控制为 $k$ 的多项式而非指数级。具体地，定义参数 $M_{h,k}=hk-h+1$ 和 $K_{h,k}=\\binom{h+k-1}{h}$，并构造一个区间集合 $\\Delta_{h,k} = \\bigcup_{\\ell=0}^{\\min(h,k)-3}[M_{h,k}+\\ell h+1,\\, M_{h,k}+\\ell h+(h-2-\\ell)]$，该集合精确描述了在多项式范围内那些可能不出现的和集大小。然后通过组合论证证明所有不在 $\\Delta_{h,k}$ 中的整数都可以被某个子集达到，从而得到 $N(h,k) \\leq k^{Ch}$ 的上界。低次 Hilbert 函数（即组合学中关于和集维度的线性递增性质）用于控制 $|hA|$ 的增长率，确保替换后的块直径仅为 $O(k)$，最终得到多项式界。",
+    "supplementary_notes": "该定理在固定重数和集合大小问题上实现了从 Rajagopal 定理的指数增长界到多项式界的重大突破，将常数 $C$ 仅依赖于 $h$ 而非 $k$。与经典 Rajagopal 定理给出 $|hA|$ 的可能取值集合呈线性增长不同，本定理证明了存在一个多项式大小的整数区间 $[1,k^{Ch}]$ 即可‘通用地’实现所有可能和集大小。这一结果在加性组合学和集合大小压缩问题上具有基础性意义，尤其在有限集合压缩、零和问题以及计算数论中关于和集结构的算法设计中有潜在应用。定理中的 $\\Delta_{h,k}$ 是一个精心定义的例外区间集合，其长度之和仅为 $O(h^2)$，表明几乎所有大小都在多项式范围内可达。",
+    "lean_code": "import Mathlib\nopen Set\n\nnoncomputable section\n\n/-- 定义 N(h,k): 最小的 N 使得 R(h,k) 中的每个整数都能由某个 {1,...,N} 的 k-子集达到 -/\ndef N (h : ℕ) (k : ℕ) : ℕ := sorry\n\n/-- 定理1.1: 对每个固定的 h≥1，存在常数 C 使得对所有 k≥2，有 N(h,k) ≤ k^(C*h) -/\ntheorem theorem_1_1 (h : ℕ) (hh : h ≥ 1) : ∃ (C : ℕ), ∀ (k : ℕ) (hk : k ≥ 2), N h k ≤ k ^ (C * h) := by\n  sorry\n\nend"
+}
