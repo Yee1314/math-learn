@@ -288,7 +288,7 @@
         const projectId = urlParams.get('id');
         let pollingTimer = null;
         let formalizationNodes = [];
-
+        
         if (!projectId) {
             alert("缺少项目 ID！");
             window.location.href = '/';
@@ -320,7 +320,7 @@
             // 确保 Lucide 图标渲染（移动板块后重新渲染图标）
             if (window.lucide) lucide.createIcons();
         });
-
+        
         function toggleAnchors() {
             const wrapper = document.getElementById('anchorsWrapper');
             const icon = document.getElementById('foldIcon');
@@ -1129,6 +1129,13 @@
             const contentBox = document.getElementById("traceDetailContent");
             if (!contentBox) return;
 
+            // 保存当前所有 <details> 元素的展开状态
+            const savedStates = [];
+            const detailsElements = contentBox.querySelectorAll('details');
+            detailsElements.forEach((details, index) => {
+                savedStates[index] = details.open;
+            });
+
             const originalSteps = Array.isArray(node.steps) && node.steps.length ? node.steps : [{
                 status: node.status,
                 title: node.title,
@@ -1199,6 +1206,14 @@
             </div>
         </div>
     `;
+
+            // 恢复之前保存的 <details> 元素的展开状态
+            const newDetailsElements = contentBox.querySelectorAll('details');
+            newDetailsElements.forEach((details, index) => {
+                if (savedStates[index] !== undefined) {
+                    details.open = savedStates[index];
+                }
+            });
 
             // 使用调度器触发 MathJax 渲染（支持 MathJax 异步加载）
             scheduleMathJaxRender(contentBox);
