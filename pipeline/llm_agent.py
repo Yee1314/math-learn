@@ -5,7 +5,7 @@ from loguru import logger
 
 # 🟢 1. 物理保留并对齐你的阿里云 Dashscope 客户端配置
 client = OpenAI(
-    api_key="sk-d8c94623ddcb4288b2cb617793e30020",
+    api_key="xxxx",
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
 
