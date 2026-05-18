@@ -44,6 +44,13 @@ async def lifespan(app: FastAPI):
 
     else:
         logger.info("自动恢复已关闭：启动时不重启上次运行中的项目。")
+        # 在这里添加逻辑：将之前运行中的项目状态重置为"interrupted"
+        for project_id, info in projects_db.items():
+            if info.get("status") == "running":
+                logger.info(f"检测到中断的运行中项目 {project_id}，重置为'中断'状态，允许用户删除")
+                info["status"] = "interrupted"
+                info["status_msg"] = "服务重启时任务中断，需要重新启动"
+
 
     yield
     # --- 关闭时执行（可选） ---
@@ -208,6 +215,9 @@ async def get_project_detail(project_id: str):
                 project_info["anchors"] = json.load(f)
         except Exception:
             pass  # 如果正在写入中可能报错，忽略即可
+    # 添加对"interrupted"状态的处理，前端可能需要这个信息
+    if project_info.get("status") == "interrupted":
+        project_info["status_msg"] = project_info.get("status_msg", "服务重启时任务中断，需要重新启动")
 
     return project_info
 
@@ -229,6 +239,10 @@ async def delete_project(project_id: str):
                 status_code=400,
                 detail="当前项目正处于大模型逻辑解析或自动编译自愈中，为防资产损坏，禁止执行物理删除！"
             )
+         # 添加对"interrupted"状态的判断，允许删除中断的项目
+        elif project.get("status") == "interrupted":
+            logger.info(f"允许删除中断状态的项目 {project_id}")
+
         # 2. 获取物理路径并清理磁盘文件
         project_path = os.path.join(PROJECTS_DIR, project_id)
         if os.path.exists(project_path):

@@ -451,67 +451,6 @@
       "lean_code": "import Mathlib.Data.Real.Basic\nimport Mathlib.Data.Finset.Card\nimport Mathlib.Combinatorics.Additive.Sumset\n\n/-- 最小直径函数 N(h,k)：使得任意 k 元整数集的 h 重和集基数均可由 [1, N] 的某个 k 元子集实现的最小 N。 -/\nnoncomputable def N (h k : ℕ) : ℕ := sorry\n\n/-- 主定理 1.1：固定重数和集的多项式压缩界 -/\ntheorem polynomial_compression_bound_for_fixed_multiplicity_sumsets\n  (h : ℕ) (hh : h ≥ 1) :\n  ∃ (C : ℝ), ∀ (k : ℕ), k ≥ 2 →\n    (N h k : ℝ) ≤ (k : ℝ) ^ (C * h) := by sorry"
     }
   },
-  "33b3a019": {
-    "id": "33b3a019",
-    "name": "全文-测试",
-    "agent_type": "qwen3.6-plus-2026-04-02",
-    "filename": "polynomial_hfold_compression.pdf",
-    "status": "running",
-    "current_step": "translating",
-    "status_msg": "正在翻译第 8/54 段...",
-    "trace_nodes": [
-      {
-        "agent_name": "Formalization Agent",
-        "status": "success",
-        "title": "Formalization Agent",
-        "compiler_error": "None",
-        "steps": [
-          {
-            "status": "success",
-            "title": "正在翻译 Section 0: Front Matter",
-            "compiler_error": "None",
-            "output_code": "\\textbf{固定倍数和集大小的多项式压缩}\\\\\n\\textit{草稿} \\quad 2026年4月29日\\\\\n\\textbf{摘要}\\\\\n对于固定的 $h$，令 $N(h,k)$ 为满足以下条件的最小 $N$：任意 $k$ 元整数集 $A$ 所能达到的 $|hA|$ 的基数，均可由 $\\{1,\\dots,N\\}$ 的某个 $k$ 元子集达到。利用 Rajagopal 关于 $|hA|$ 可能取值范围的固定 $h$ 定理，我们证明了对任意固定的 $h$，有 $N(h,k) \\le k^{C_h}$。本文的新颖之处在于，用多项式直径替换了 Rajagopal 大值构造中的稀疏几何块。该替换是在低次 Hilbert 函数的层面上进行的，而当 $h$ 固定时，这些函数正是与 $h$ 重和集相关的唯一数据。"
-          },
-          {
-            "status": "success",
-            "title": "正在翻译 Section 1: 1 Introduction",
-            "compiler_error": "None",
-            "output_code": "\\section{引言}\n设 $A \\subset \\mathbb{Z}$ 为有限集，$h$ 为正整数，记\n\\[\nhA = \\{a_1 + \\cdots + a_h : a_i \\in A\\},\n\\]\n其中允许元素重复。定义\n\\[\nR(h,k) = \\{|hA| : A \\subset \\mathbb{Z}, |A| = k\\}.\n\\]\n令 $N(h,k)$ 为满足\n\\[\nR(h,k) = \\{|hA| : A \\subseteq \\{1,\\dots,N\\}, |A| = k\\}\n\\]\n的最小正整数 $N$。等价地，我们可以在区间 $[0, N-1]$ 上进行讨论，并在最后进行平移。本文旨在证明如下多项式压缩界。"
-          },
-          {
-            "status": "success",
-            "title": "正在翻译 Section 1: 1 Introduction",
-            "compiler_error": "None",
-            "output_code": "\\textbf{定理 1.1.}\n对任意固定的 $h \\ge 1$，存在常数 $C$，使得对所有 $k \\ge 2$，均有\n\\[ N(h,k) \\le k C^h. \\]\n该证明利用了 Rajagopal 关于固定重数和集可能大小的定理。令\n\\[ M = \\binom{h+k-1}{h}, \\quad K = \\binom{h+k-1}{k}, \\]\n并定义\n\\[ \\Delta = \\bigcup_{\\ell=0}^{\\min(h,k)-3} \\left[ M + \\ell h + 1, \\, M + \\ell h + (h-2-\\ell) \\right]. \\]\n此处及下文中，$[u,v]$ 表示满足 $u \\le n \\le v$ 的整数 $n$ 构成的集合；若 $u > v$，则该区间为空集。"
-          },
-          {
-            "status": "success",
-            "title": "正在翻译 Section 1: 1 Introduction",
-            "compiler_error": "None",
-            "output_code": "\\textbf{定理 1.2} (Rajagopal [1])。\n对于每个固定的 $h$，存在 $k_h$，使得对所有 $k > k_h$，有\n\\[\nR(h,k) = [M_{h,k}, K_{h,k}] \\setminus \\Delta_{h,k}.\n\\]\n对于较大的 $k$，该证明是构造性的，并为 Rajagopal 范围内的所有值给出了多项式直径的见证元。有限个较小的 $k$ 值最终通过增加多项式界中的常数被吸收。\n范围的下半部分已由 Rajagopal 的填充集构造提供，且其直径为多项式级。范围的上半部分则是需要改进之处。Rajagopal 的大值构造使用了稀疏几何级数；它们的低次生成函数具有正确的形状，但其直径在相关参数下呈指数增长。我们将其替换为具有相同截断生成函数的多项式直径格点构件。\n由于 $h$ 是固定的，一个固定维数的混合基映射随后将所得的格点集嵌入到 $\\mathbb{Z}$ 中，且直径仅呈多项式增长。"
-          },
-          {
-            "status": "success",
-            "title": "正在翻译 Section 2: 2 Generating functions and disjoint unions",
-            "compiler_error": "None",
-            "output_code": "\\section{生成函数与不交并}\n\n在本文的其余部分中，$h$ 是固定的。$O(\\cdot)$、$\\Theta(\\cdot)$ 和 $\\asymp$ 中隐含的常数可能依赖于 $h$，但不依赖于 $k$。\n\n对于无挠阿贝尔群中的有限集 $A$，定义截断和集生成函数\n\\[\nF_A(z) = \\sum_{q=0}^h |qA| z^q.\n\\]\n所有涉及 $F_A$ 的恒等式均在模 $z^{h+1}$ 意义下理解。"
-          },
-          {
-            "status": "success",
-            "title": "正在翻译 Section 2: 2 Generating functions and disjoint unions",
-            "compiler_error": "None",
-            "output_code": "\\textbf{定义 2.1}（不交并）。\n设 $A \\subset \\mathbb{Z}^r$ 与 $B \\subset \\mathbb{Z}^s$ 为有限集。定义\n\\[\nA \\sqcup B = (A, 0, 1, 0) \\cup (0, B, 0, 1) \\subset \\mathbb{Z}^{r+s+2}.\n\\]\n迭代不交并的结合方式可任意指定。"
-          },
-          {
-            "status": "success",
-            "title": "正在翻译 Section 2: 2 Generating functions and disjoint unions",
-            "compiler_error": "None",
-            "output_code": "\\textbf{引理 2.2.}\n对于有限集 $A$ 与 $B$，有\n\\[\nF_{A \\sqcup B}(z) \\equiv F_A(z) F_B(z) \\pmod{z^{h+1}}.\n\\]"
-          }
-        ]
-      }
-    ]
-  },
   "1ff121c8": {
     "id": "1ff121c8",
     "name": "测试-短",

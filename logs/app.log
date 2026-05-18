@@ -1945,3 +1945,13 @@ FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'E:\\yd\\proj
 2026-05-18 11:18:54.397 | INFO     | backend.main:lifespan:46 - 自动恢复已关闭：启动时不重启上次运行中的项目。
 2026-05-18 11:46:17.795 | INFO     | backend.main:<module>:73 - >>> PaperLean 全栈安全日志总线物理挂载成功 <<<
 2026-05-18 11:46:17.850 | INFO     | backend.main:lifespan:46 - 自动恢复已关闭：启动时不重启上次运行中的项目。
+2026-05-18 11:55:29.497 | INFO     | backend.main:<module>:80 - >>> PaperLean 全栈安全日志总线物理挂载成功 <<<
+2026-05-18 11:55:29.556 | INFO     | backend.main:lifespan:46 - 自动恢复已关闭：启动时不重启上次运行中的项目。
+2026-05-18 11:55:29.556 | INFO     | backend.main:lifespan:50 - 检测到中断的运行中项目 33b3a019，重置为'中断'状态，允许用户删除
+2026-05-18 11:56:18.980 | INFO     | backend.main:<module>:80 - >>> PaperLean 全栈安全日志总线物理挂载成功 <<<
+2026-05-18 11:56:19.033 | INFO     | backend.main:lifespan:46 - 自动恢复已关闭：启动时不重启上次运行中的项目。
+2026-05-18 11:57:22.163 | INFO     | backend.main:<module>:80 - >>> PaperLean 全栈安全日志总线物理挂载成功 <<<
+2026-05-18 11:57:22.217 | INFO     | backend.main:lifespan:46 - 自动恢复已关闭：启动时不重启上次运行中的项目。
+2026-05-18 11:57:28.587 | INFO     | backend.main:delete_project:244 - 允许删除中断状态的项目 33b3a019
+2026-05-18 11:57:28.594 | INFO     | backend.main:delete_project:251 - 已清理磁盘空间: E:\yd\project\math-learn\artifacts\projects\33b3a019
+2026-05-18 11:57:28.598 | INFO     | backend.main:delete_project:259 - 项目 33b3a019 已成功删除
