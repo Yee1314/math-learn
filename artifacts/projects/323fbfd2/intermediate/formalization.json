@@ -1,0 +1,72 @@
+[
+    {
+        "id": "p1_s12_other_1",
+        "type": "Lemma",
+        "title": "\\textbf{定义} 确立 $N(h,k)$ 的数学内涵：其为覆盖所有 $k$ 元整数集 $h$ 重和基数的最小自然数上界。",
+        "description": "\\textbf{定义} 确立 $N(h,k)$ 的数学内涵：其为覆盖所有 $k$ 元整数集 $h$ 重和基数的最小自然数上界。 [核心键点: 定义 $N(h,k) = \\min \\{ N \\in \\mathbb{N} \\mid \\forall A \\subset \\mathbb{Z}, |A|=k \\implies |hA| = |hB| \\text{ for some } B \\subset \\{1,\\dots,N\\}, |B|=k \\}$]",
+        "lean_code": "def N (h k : ℕ) : ℕ := Nat.find (exists_minimal_covering_set h k)"
+    },
+    {
+        "id": "p1_s12_other_2",
+        "type": "Lemma",
+        "title": "\\textbf{注记} 阐明核心分析工具：低次 Hilbert 函数对固定折叠和集结构的决定性作用及多项式直径替换机制。",
+        "description": "\\textbf{注记} 阐明核心分析工具：低次 Hilbert 函数对固定折叠和集结构的决定性作用及多项式直径替换机制。 [核心键点: 将稀疏几何块替换为多项式直径结构，并在低次 Hilbert 函数层面完成等价性验证]",
+        "lean_code": "lemma hilbert_function_characterizes_h_fold_sumset (h : ℕ) : ∀ (A B : Finset ℤ), low_degree_hilbert_func A = low_degree_hilbert_func B → |hA| = |hB| := by sorry"
+    },
+    {
+        "id": "p1_s12_other_3",
+        "type": "Theorem",
+        "title": "\\textbf{定理} 证明 $N(h,k)$ 满足关于 $k$ 的多项式增长上界。",
+        "description": "\\textbf{定理} 证明 $N(h,k)$ 满足关于 $k$ 的多项式增长上界。 [核心键点: 结合 Rajagopal 固定 $h$ 定理，导出 $N(h,k) \\leq k^{C_h}$]",
+        "lean_code": "theorem N_polynomial_bound (h k : ℕ) : N h k ≤ k ^ C h := by sorry"
+    },
+    {
+        "id": "p1_s22_other_1",
+        "type": "Lemma",
+        "title": "引入加法组合学基础概念：明确有限整数集 $A$ 的 $h$ 重和 $hA$ 的定义，强调允许元素重复选取以构建多重和结构。",
+        "description": "引入加法组合学基础概念：明确有限整数集 $A$ 的 $h$ 重和 $hA$ 的定义，强调允许元素重复选取以构建多重和结构。 [核心键点: hA 的定义与重复性说明]",
+        "lean_code": "def h_sum (A : Finset ℤ) (h : ℕ+) : Finset ℤ := sorry"
+    },
+    {
+        "id": "p1_s22_other_2",
+        "type": "Lemma",
+        "title": "基于 $hA$ 的基数变化规律，形式化定义值域集合 $R(h,k)$，刻画固定大小子集的 $h$ 重和可能取到的所有基数取值。",
+        "description": "基于 $hA$ 的基数变化规律，形式化定义值域集合 $R(h,k)$，刻画固定大小子集的 $h$ 重和可能取到的所有基数取值。 [核心键点: R(h,k) 的值域刻画]",
+        "lean_code": "def R (h k : ℕ+) : Set ℕ := sorry"
+    },
+    {
+        "id": "p1_s22_other_3",
+        "type": "Lemma",
+        "title": "定义最小正整数 $N(h,k)$，使得任意大小为 $k$ 的子集其 $h$ 重和的基数取值范围可由 $\\{1,\\dots,N\\}$ 中的子集完全覆盖，确立压缩问题的核心参数。",
+        "description": "定义最小正整数 $N(h,k)$，使得任意大小为 $k$ 的子集其 $h$ 重和的基数取值范围可由 $\\{1,\\dots,N\\}$ 中的子集完全覆盖，确立压缩问题的核心参数。 [核心键点: N(h,k) 的最小性与离散区间表述]",
+        "lean_code": "def N (h k : ℕ+) : ℕ := sorry"
+    },
+    {
+        "id": "p1_s22_other_4",
+        "type": "Theorem",
+        "title": "指出连续区间 $[0, N-1]$ 与离散集合 $\\{1,\\dots,N\\}$ 的平移等价性，并正式引出全文核心目标：证明多项式压缩界。",
+        "description": "指出连续区间 $[0, N-1]$ 与离散集合 $\\{1,\\dots,N\\}$ 的平移等价性，并正式引出全文核心目标：证明多项式压缩界。 [核心键点: 平移等价性与多项式压缩界目标声明]",
+        "lean_code": "theorem polynomial_compression_bound : sorry"
+    },
+    {
+        "id": "p1_s999_other_1",
+        "type": "Lemma",
+        "title": "引入辅助符号与区间记号的定义，明确 $M_{h,k}$、$K_{h,k}$、$\\Delta_{h,k}$ 的构造方式及闭区间 $[u,v]$ 的整数集含义。",
+        "description": "引入辅助符号与区间记号的定义，明确 $M_{h,k}$、$K_{h,k}$、$\\Delta_{h,k}$ 的构造方式及闭区间 $[u,v]$ 的整数集含义。 [核心键点: 定义乘积区间与组合数参数，规范区间空值处理。]",
+        "lean_code": "def M_hk (h k : ℕ) : ℕ := h ^ (k - h + 1)\ndef K_hk (h k : ℕ) : ℕ := Nat.choose (h + k - 1) h\ndef Delta_hk (h k : ℕ) : Finset ℕ := Finset.prod (Finset.range (min h k - 2)) (λ ℓ, Set.Icc (M_hk h k + ℓ * h + 1) (M_hk h k + ℓ * h + (h - 2 - ℓ)))\nlemma interval_def (u v : ℤ) : Set.Icc u v = {n : ℤ | u ≤ n ∧ n ≤ v} := by simp"
+    },
+    {
+        "id": "p1_s999_other_2",
+        "type": "Theorem",
+        "title": "给出证明思路：引用 Rajagopal 关于固定折叠和集大小取值范围的定理，并结合前述定义的参数进行推导。",
+        "description": "给出证明思路：引用 Rajagopal 关于固定折叠和集大小取值范围的定理，并结合前述定义的参数进行推导。 [核心键点: 利用已知和集范围定理衔接目标不等式。]",
+        "lean_code": "theorem proof_thm_1_1 (h : ℕ) (h_ge : h ≥ 1) : ∃ C : ℝ, ∀ k : ℕ, k ≥ 2 → N h k ≤ k ^ (C * h) := by\n  rcases rajagopal_theorem_range_sumset with ⟨C, hC⟩\n  -- 结合 M_hk, K_hk, Delta_hk 进行放缩推导\n  sorry"
+    },
+    {
+        "id": "p1_s999_other_3",
+        "type": "Theorem",
+        "title": "陈述核心不等式命题：对固定 $h \\ge 1$，存在常数 $C$ 使得 $N(h,k) \\le k^{Ch}$ 对所有 $k \\ge 2$ 成立。",
+        "description": "陈述核心不等式命题：对固定 $h \\ge 1$，存在常数 $C$ 使得 $N(h,k) \\le k^{Ch}$ 对所有 $k \\ge 2$ 成立。 [核心键点: 建立 $N(h,k)$ 的上界估计，依赖常数 $C$ 与指数 $Ch$。]",
+        "lean_code": "theorem thm_1_1 (h : ℕ) (h_ge : h ≥ 1) : ∃ C : ℝ, ∀ k : ℕ, k ≥ 2 → N h k ≤ k ^ (C * h) := by sorry"
+    }
+]

@@ -1,0 +1,34 @@
+{
+    "main_theorem": {
+        "id": "Thm_PolyBound_Nhk",
+        "title": "N(h,k) 的多项式上界定理",
+        "statement": "对于任意固定的正整数 $h \\ge 1$，存在仅依赖于 $h$ 的正常数 $C_h$，使得对所有 $k \\ge 2$，均有 $N(h,k) \\le k^{C_h}$。",
+        "context_definitions": {
+            "$hA$": "$A$ 的 $h$ 重和集：$\\{a_1 + \\cdots + a_h : a_i \\in A\\}$",
+            "$R(h,k)$": "值域集：$\\{|hA| : A \\subset \\mathbb{Z}, |A| = k\\}$",
+            "$N(h,k)$": "最小表示数/极小覆盖数：满足任意 $k$ 元集 $A$ 的 $h$ 重和基数 $|hA|$ 均可由 $\\{1, \\dots, N\\}$ 的某个 $k$ 元子集实现的最小整数 $N$"
+        },
+        "conditions": {
+            "fixed_param": "$h \\ge 1$ (固定正整数)",
+            "variable_param": "$k \\ge 2$ (集合基数)"
+        },
+        "conclusion": {
+            "bound_type": "多项式上界 (Polynomial Upper Bound)",
+            "inequality": "N(h,k) \\le k^{C_h}",
+            "constant_property": "$C_h$ 仅依赖于 $h$，与 $k$ 无关"
+        },
+        "proof_architecture": {
+            "core_reference": "Rajagopal 关于固定折叠和集大小取值范围的定理",
+            "key_constructs": {
+                "M_{h,k}": "h^{k-h+1}",
+                "K_{h,k}": "\\binom{h+k-1}{h}",
+                "Delta_{h,k}": "\\prod_{\\ell=0}^{\\min(h,k)-3} [M_{h,k} + \\ell h + 1, M_{h,k} + \\ell h + (h-2)] (注：原文片段截断)"
+            }
+        },
+        "fragment_traceability": [
+            "p1_s12",
+            "p1_s22",
+            "p1_999"
+        ]
+    }
+}

@@ -1,0 +1,72 @@
+[
+    {
+        "id": "p1_s12_step1",
+        "type": "Lemma",
+        "title": "步骤_step1 (形式化定义极值参数 $N(h,...)",
+        "description": "形式化定义极值参数 $N(h,k)$，刻画 $k$ 元整数集与其子集在和集基数上的等价覆盖关系。 [核心键点: 基数可达性的极小存在性条件]",
+        "lean_code": "def N (h k : ℕ) : ℕ := Classical.choose (exists_least_N h k)"
+    },
+    {
+        "id": "p1_s12_step2",
+        "type": "Theorem",
+        "title": "步骤_step2 (基于 Rajagopal 固定...)",
+        "description": "基于 Rajagopal 固定 $h$ 定理的值域刻画，推导并证明 $N(h,k)$ 的多项式上界估计。 [核心键点: $N(h,k)\\leq k^{C_h}$ 的不等式证明]",
+        "lean_code": "theorem upper_bound_N_h_k (h k : ℕ) : N h k ≤ k ^ C_h := by sorry"
+    },
+    {
+        "id": "p1_s12_step3",
+        "type": "Lemma",
+        "title": "步骤_step3 (构建多项式直径替换方案，替代原...)",
+        "description": "构建多项式直径替换方案，替代原构造中的稀疏几何块以优化参数范围。 [核心键点: 稀疏几何块到多项式结构的同构替换]",
+        "lean_code": "structure poly_diameter_replacement (A : Finset ℤ) := (replacement : Finset ℕ) (h_equiv : card_sumsets_eq A replacement)"
+    },
+    {
+        "id": "p1_s12_step4",
+        "type": "Theorem",
+        "title": "步骤_step4 (论证低次 Hilbert 函数...)",
+        "description": "论证低次 Hilbert 函数在固定折叠次数下对和集结构的完全刻画能力。 [核心键点: Hilbert 函数与 $h$-重和集的充分必要性对应]",
+        "lean_code": "theorem hilbert_functions_determine_h_fold_sumsets (h : ℕ) (f g : Polynomial ℤ) : hilbert_func f = hilbert_func g → sumset_card h f = sumset_card h g := by sorry"
+    },
+    {
+        "id": "p1_s22_step1",
+        "type": "Lemma",
+        "title": "步骤_step1 (形式化定义有限整数集的多重和 ...)",
+        "description": "形式化定义有限整数集的多重和 $hA$ 及其势的取值集合 $R(h,k)$。 [核心键点: 多重集和的构造与势的映射关系]",
+        "lean_code": "def hA (A : Finset ℤ) (h : ℕ) : Finset ℤ := Finset.image (fun f => Finset.sum f id) (Finset.univ : Finset (Fin h → A)) -- 示意性骨架"
+    },
+    {
+        "id": "p1_s22_step2",
+        "type": "Lemma",
+        "title": "步骤_step2 (引入极值参数 $N(h,k)$...)",
+        "description": "引入极值参数 $N(h,k)$，刻画使 $h$ 重和的势能覆盖 $R(h,k)$ 的全集所需的最小区间端点。 [核心键点: 参数 $N(h,k)$ 的极小性与区间等价表述]",
+        "lean_code": "def N (h k : ℕ) : ℕ := Nat.find (∃ N, ∀ A : Finset ℕ, A.card = k → A ⊆ Finset.Icc 1 N → (hA A h).card ∈ R h k) -- 示意性骨架"
+    },
+    {
+        "id": "p1_s22_step3",
+        "type": "Theorem",
+        "title": "步骤_step3 (陈述本文核心目标：建立关于该参...)",
+        "description": "陈述本文核心目标：建立关于该参数的多项式压缩上界定理。 [核心键点: 多项式压缩界的命题声明]",
+        "lean_code": "theorem polynomial_compression_bound (h k : ℕ) : ∃ C > 0, N h k ≤ C * (k ^ h) := by sorry"
+    },
+    {
+        "id": "p1_s999_step1",
+        "type": "Theorem",
+        "title": "步骤_step1 (陈述定理核心不等式与参数约束条...)",
+        "description": "陈述定理核心不等式与参数约束条件 [核心键点: 固定 $h \\ge 1$ 时存在常数 $C$ 控制 $N(h,k)$ 的增长阶]",
+        "lean_code": "theorem thm_1_1 (h : ℕ) (h_ge : h ≥ 1) : ∃ C : ℝ, ∀ k : ℕ, k ≥ 2 → N h k ≤ k ^ (C * h) := by sorry"
+    },
+    {
+        "id": "p1_s999_step2",
+        "type": "Lemma",
+        "title": "步骤_step2 (引入辅助量 $M$、$K$ 与...)",
+        "description": "引入辅助量 $M$、$K$ 与集合 $\\Delta$ 的形式化定义 [核心键点: 利用指数与组合结构构造中间变量，并定义离散区间的并集]",
+        "lean_code": "def M (h k : ℕ) : ℕ := h ^ (k - h + 1)\ndef K (h k : ℕ) : ℕ := Nat.choose (h + k - 1) h\ndef Delta (h k : ℕ) : Set ℤ := ⋃ ℓ ∈ Finset.range (min h k - 2), Icc (M h k + ℓ * h + 1) (M h k + ℓ * h + (h - 2 - ℓ)) := by sorry"
+    },
+    {
+        "id": "p1_s999_step3",
+        "type": "Lemma",
+        "title": "步骤_step3 (明确区间记号 $[u,v]$ ...)",
+        "description": "明确区间记号 $[u,v]$ 的数学含义与边界情况处理 [核心键点: $[u,v]$ 为闭区间整数集，上界小于下界时自动退化为空集]",
+        "lean_code": "def Interval (u v : ℤ) : Set ℤ := { n : ℤ | u ≤ n ∧ n ≤ v }\nlemma Interval_empty (u v : ℤ) (h : u > v) : Interval u v = ∅ := by sorry"
+    }
+]

@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{etoolbox}
+
+% 1. 自定义定理样式实现标题后强制换行
+\newtheoremstyle{break}% 样式名称
+  {\topsep}{\topsep}% 环境上下间距
+  {\normalfont}% 正文字体
+  {}% 缩进量
+  {\bfseries}{.}% 头部字体和标点
+  {\newline}% 头部后的间距：设置为 \newline 即可实现完美的换行效果
+  {}% 头部时间/附加参数规范
+
+% 应用新样式并声明常用的定理类环境
+\theoremstyle{break}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\newtheorem{definition}[theorem]{定义}
+
+% 2. 利用 etoolbox 宏包动态修补 proof 环境，使其标题后自动换行
+\patchcmd{\proof}{\item[\hskip\labelsep\itshape#1\@addpunct{.}]}{\item[\hskip\labelsep\itshape#1\@addpunct{.}]\hfill\par}{}{}
+
+\begin{document}
+\section*{\textbf{摘要}}
+
+对于固定的 $h$，令 $N(h,k)$ 为满足以下条件的最小正整数 $N$：任意由 $k$ 个整数组成的集合所达到的基数 $|hA|$，亦必可由 $\{1,\dots,N\}$ 的某个 $k$ 元子集达到。借助 Rajagopal 关于 $|hA|$ 可能取值范围的固定 $h$ 定理，我们证明了对于任意固定的 $h$，均有 $N(h,k)\leq k^{C_h}$。本文的核心新贡献在于，利用多项式直径结构对 Rajagopal 大值构造中的稀疏几何块进行了替换。该替换操作在低次 Hilbert 函数层面实施，而低次 Hilbert 函数恰是 $h$ 固定时决定 $h$ 重和集性质的全部关键数据。
+\section{引言}
+
+对于有限集 $A \subset \mathbb{Z}$ 与正整数 $h$，记
+\[
+hA = \{a_1 + \cdots + a_h : a_i \in A\}
+\]
+其中允许元素重复。定义
+\[
+R(h,k) = \{|hA| : A \subset \mathbb{Z}, |A| = k\}.
+\]
+令 $N(h,k)$ 为满足以下条件的最小正整数 $N$：
+\[
+R(h,k) = \{|hA| : A \subseteq \{1,\dots,N\}, |A| = k\}.
+\]
+等价地，我们亦可考虑区间 $[0, N-1]$ 并在最后进行平移。
+
+本文的目的是证明下述多项式压缩界。
+\textbf{定理 1.1.} 对于任意固定的 $h \ge 1$，均存在常数 $C$，使得对一切 $k \ge 2$，成立
+\[
+N(h,k) \le k^{Ch}.
+\]
+本证明依赖于 Rajagopal 关于固定折叠和集大小取值范围的定理。令
+\[
+M = h^{k-h+1}, \quad K = \binom{h+k-1}{h,k},
+\]
+并定义
+\[
+\Delta = \bigcup_{\ell=0}^{\min(h,k)-3} [M_{h,k} + \ell h+1, M_{h,k} + \ell h + (h-2-\ell)].
+\]
+此处及后续内容中，$[u,v]$ 表示满足 $u \le n \le v$ 的整数 $n$ 构成的集合；当 $u > v$ 时，该区间视为空集。
+\end{document}

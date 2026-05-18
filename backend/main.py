@@ -487,25 +487,7 @@ def get_global_agent_status():
         # 只要项目启动过，或者已经有了状态消息，就分配卡片槽位
         if status in ["running", "success", "fail"] or status_msg != "等待调度...":
 
-            # 🟢 彻底修复：依据 core.py 中真实更新的 status_msg 文本特征动态判定
-            dynamic_agent = "System Scheduler"
-
-            if status == "success":
-                dynamic_agent = "System Archiver"
-            elif status == "fail":
-                dynamic_agent = "Auto-Healing Agent"  # 失败一般停留在自愈上限或崩溃处
-            else:
-                # 处于运行中（running）时，根据具体正在做的事情对齐 Agent
-                if "PDF" in status_msg or "锚点" in status_msg:
-                    dynamic_agent = "PDF Parser Agent"
-                elif "拆解第" in status_msg or "段" in status_msg :
-                    dynamic_agent = "Transformer Agent"
-                elif "LaTeX 源码" in status_msg and "编译" in status_msg:
-                    dynamic_agent = "Compiler Agent"
-                elif "自愈" in status_msg or "修复" in status_msg or "尝试" in status_msg:
-                    dynamic_agent = "Auto-Healing Agent"
-                elif "核心定理" in status_msg or "图谱" in status_msg or "成果" in status_msg:
-                    dynamic_agent = "Theorem Extractor"
+            dynamic_agent=projects_db[f"{proj_id}"]["trace_nodes"][0]["agent_name"] if "trace_nodes" in info and isinstance(info["trace_nodes"], list) and len(info["trace_nodes"]) > 0 else dynamic_agent
 
             active_slots.append({
                 "project_id": proj_id,

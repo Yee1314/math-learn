@@ -1,0 +1,35 @@
+{
+    "main_theorem": {
+        "identifier": "Theorem 1.1",
+        "formal_statement": "对于任意固定的 $h \\geq 1$，存在常数 $C$，使得对所有 $k \\geq 2$，有 $N(h,k) \\leq k^{Ch}$。",
+        "parameter_constraints": {
+            "h": {
+                "type": "integer",
+                "condition": "固定 (fixed)，且 $h \\geq 1$"
+            },
+            "k": {
+                "type": "integer",
+                "condition": "$k \\geq 2$"
+            },
+            "C": {
+                "type": "existence_constant",
+                "dependency": "仅依赖于 $h$（摘要中记为 $C_h$）"
+            }
+        },
+        "prerequisite_definitions": {
+            "hA": "允许元素重复的 $h$ 重和集：$\\left\\{ \\sum_{i=1}^h a_i : a_i \\in A \\right\\}$",
+            "R(h,k)": "所有可能的和集基数集合：$\\{ |hA| : A \\subset \\mathbb{Z}, |A| = k \\}$",
+            "N(h,k)": "满足 $R(h,k) = \\{ |hA| : A \\subseteq \\{1,\\dots,N\\}, |A| = k \\}$ 的最小正整数 $N$"
+        },
+        "methodological_core": {
+            "theoretical_basis": "基于 Rajagopal 关于固定 $h$ 情形下 $|hA|$ 取值范围的定理",
+            "structural_innovation": "将 Rajagopal 大值构造中所用的稀疏几何块替换为具有多项式直径的结构",
+            "implementation_level": "该替换操作在低次 Hilbert 函数层面实施"
+        },
+        "auxiliary_formulas_in_proof": {
+            "M": "$h^{k-h+1}$",
+            "K": "$\\binom{h+k-1}{h,k}$",
+            "Delta": "$\\prod_{\\ell=0}^{\\min(h,k)-3} [M_{h,k} + \\ell h + 1, M_{h,k} + \\ell h + (h-2-\\ell)]$"
+        }
+    }
+}

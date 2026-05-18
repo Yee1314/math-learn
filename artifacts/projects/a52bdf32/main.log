@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2026.1.14)  18 MAY 2026 03:15
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2026.1.14)  17 MAY 2026 12:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -321,7 +321,8 @@ Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count303
 )
 \c@theorem=\count304
- (./main.aux)
+
+No file main.aux.
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
@@ -396,124 +397,31 @@ LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
 (Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 25.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 25.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 34.
-
+LaTeX Font Info:    Trying to load font information for U+msa on input line 28.
 
 (c:/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 34.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 28.
 
 
 (c:/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-] [2]
-! Missing $ inserted.
-<inserted text> 
-                $
-l.85 ...素的和的每个坐标均落在区间 $[0, hM]$ 内。由于 $Q > hM$，\phi
-                                                   下的像相等意味着其 $Q$-进制展开的各位数字相等...
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-Missing character: There is no 下 (U+4E0B) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 的 (U+7684) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 像 (U+50CF) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 相 (U+76F8) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 等 (U+7B49) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 意 (U+610F) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 味 (U+5473) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 着 (U+7740) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 其 (U+5176) in font [lmroman10-regular]:mapping=t
-ex-text;!
-! Missing $ inserted.
-<inserted text> 
-                $
-l.86 \section
-             {多项式直径无和进位 gadget}
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-Missing character: There is no 进 (U+8FDB) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 制 (U+5236) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 展 (U+5C55) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 开 (U+5F00) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 的 (U+7684) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 各 (U+5404) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 位 (U+4F4D) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 数 (U+6570) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 字 (U+5B57) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 相 (U+76F8) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 等 (U+7B49) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no ， (U+FF0C) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 从 (U+4ECE) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 而 (U+800C) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 这 (U+8FD9) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 些 (U+4E9B) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 向 (U+5411) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 量 (U+91CF) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 的 (U+7684) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 和 (U+548C) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 相 (U+76F8) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 等 (U+7B49) in font [lmroman10-regular]:mapping=t
-ex-text;!
-Missing character: There is no 。 (U+3002) in font [lmroman10-regular]:mapping=t
-ex-text;!
-[3] [4] [5]
-Overfull \hbox (242.19205pt too wide) detected at line 176
-\OML/cmm/m/it/10.95 F[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 z\OT1/cmr/m/n/10
-.95 ) \OMS/cmsy/m/n/10.95 ^^Q [] \OML/cmm/m/it/10.95 z[] [] \OT1/cmr/m/n/10.95 
-= [][] [] = []\OML/cmm/m/it/10.95 :
- []
-
-[6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] (./main.aux)
+] [2] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2022/07/14>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 7986 strings out of 474772
- 217957 string characters out of 5761268
- 1933842 words of memory out of 5000000
- 30050 multiletter control sequences out of 15000+600000
- 566128 words of font info for 90 fonts, out of 8000000 for 9000
+ 7844 strings out of 474772
+ 210490 string characters out of 5761268
+ 1929842 words of memory out of 5000000
+ 29923 multiletter control sequences out of 15000+600000
+ 564511 words of font info for 75 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,9n,97p,472b,271s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,7n,97p,384b,271s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (16 pages).
+Output written on main.pdf (2 pages).

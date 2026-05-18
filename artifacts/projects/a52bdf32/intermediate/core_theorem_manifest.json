@@ -1,0 +1,30 @@
+{
+    "main_theorem": {
+        "id": "定理 1.1",
+        "formal_statement": "对于任意固定的 $h \\ge 1$，均存在常数 $C$，使得对一切 $k \\ge 2$，成立 $N(h,k) \\le k^{Ch}$。",
+        "parameter_constraints": {
+            "h": "固定正整数 ($h \\ge 1$)",
+            "k": "正整数 ($k \\ge 2$)",
+            "C": "仅依赖于 $h$ 的正常数"
+        },
+        "core_definitions": {
+            "N(h,k)": "满足基数取值范围等价性的最小正整数 $N$，即 $R(h,k) = \\{|hA| : A \\subseteq \\{1,\\dots,N\\}, |A| = k\\}$",
+            "R(h,k)": "$\\{|hA| : A \\subset \\mathbb{Z}, |A| = k\\}$，表示 $k$ 元整数集 $h$ 重和集的基数可能取值集合",
+            "auxiliary_constructs": {
+                "M": "h^{k-h+1}",
+                "K": "\\binom{h+k-1}{h,k}",
+                "\\Delta": "\\bigcup_{\\ell=0}^{\\min(h,k)-3} [M_{h,k} + \\ell h+1, M_{h,k} + \\ell h + (h-2-\\ell)]"
+            }
+        },
+        "methodological_core": {
+            "关键创新": "利用多项式直径结构对 Rajagopal 大值构造中的稀疏几何块进行替换",
+            "实施层面": "低次 Hilbert 函数层面",
+            "理论依赖": "Rajagopal 关于固定 $h$ 时 $|hA|$ 可能取值范围的定理"
+        },
+        "logical_context": {
+            "问题背景": "加法组合学中的折叠和集基数刻画与极小覆盖区间问题",
+            "等价处理": "可考虑区间 $[0, N-1]$ 并在最后进行平移",
+            "结论意义": "给出了 $N(h,k)$ 关于 $k$ 的多项式上界估计"
+        }
+    }
+}

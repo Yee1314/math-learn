@@ -853,16 +853,32 @@
                 // 🚀 核心修复：为定理内容增加 overflow-auto 和 max-h-[32rem]，打破死板高度！
                 const formalStmt = formalText ? `<div class="latex-block whitespace-pre-wrap overflow-auto max-h-[32rem] custom-scrollbar">${formalText}</div>` : '<div class="text-slate-400">暂无形式化语句</div>';
 
-                const paramHtml = Object.keys(mt.parameter_constraints || {}).length ?
-                    `<div class="space-y-1 text-xs text-slate-600">${Object.entries(mt.parameter_constraints).map(([k, v]) => `<div><span class="font-mono font-bold text-indigo-600">${k}:</span> ${v}</div>`).join('')}</div>` :
-                    '<div class="text-slate-400">暂无显式约束</div>';
+                // 新增：证明过程渲染
+                const proofStrategy = mt.proof_strategy || '';
+                const proofStrategyHtml = proofStrategy ? 
+                    `<div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">证明策略</h4>
+                        <div class="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed overflow-auto max-h-[20rem] custom-scrollbar">${proofStrategy}</div>
+                    </div>` :
+                    '<div class="hidden"></div>';
 
-                const coreDefs = Object.keys(mt.core_definitions || {}).length ?
-                    `<div class="space-y-1 text-xs text-slate-600">${Object.entries(mt.core_definitions).map(([k, v]) => {
-                        if (typeof v === 'object') return '';
-                        return `<div><span class="font-bold text-cyan-600 font-mono">${k}:</span> <span title="${v}" class="truncate">${v}</span></div>`;
-                    }).join('')}</div>` :
-                    '<div class="text-slate-400">暂无核心定义</div>';
+                // 新增：补充注记渲染
+                const supplementaryNotes = mt.supplementary_notes || '';
+                const supplementaryHtml = supplementaryNotes ?
+                    `<div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">补充注记</h4>
+                        <div class="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed overflow-auto max-h-[20rem] custom-scrollbar">${supplementaryNotes}</div>
+                    </div>` :
+                    '<div class="hidden"></div>';
+
+                // 新增：Lean 代码渲染
+                const leanCode = mt.lean_code || '';
+                const leanCodeHtml = leanCode ?
+                    `<div class="bg-white p-4 rounded-xl border border-slate-200 md:col-span-2">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Lean 4 源码</h4>
+                        <pre class="bg-slate-950 p-3 rounded-lg text-xs text-emerald-400 border border-slate-800 shadow-inner overflow-x-auto overflow-y-auto max-h-[20rem] custom-scrollbar font-mono leading-relaxed whitespace-pre-wrap break-words">${leanCode}</pre>
+                    </div>` :
+                    '<div class="hidden"></div>';
 
                 const html = `
             <div class="space-y-4">
@@ -876,20 +892,14 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Parameter Constraints</h4>
-                        ${paramHtml}
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-200">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Core Definitions</h4>
-                        ${coreDefs}
-                    </div>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${proofStrategyHtml}
+                    ${supplementaryHtml}
                 </div>
+
+                ${leanCodeHtml}
             </div>
         `;
-
                 theoremContainer.innerHTML = html;
                 // 使用调度器触发 MathJax 渲染（支持 MathJax 异步加载）
                 scheduleMathJaxRender(theoremContainer);
